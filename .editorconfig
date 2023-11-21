@@ -1,0 +1,10 @@
+root = true
+
+[*]
+indent_style = space
+end_of_line = lf
+insert_final_newline = true
+max_line_length = 80
+indent_size = 4
+ij_typescript_spaces_within_imports = true
+single_quote = true
