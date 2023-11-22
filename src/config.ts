@@ -2,26 +2,25 @@ import { config } from "dotenv";
 config();
 
 export default {
-    token: ,
+    token: process.env.TOKEN,
     DB: {
-        host: "91.203.192.50",
-        database: "gamer",
-        port: 5432,
-        password: "Knyaz2000",
-        user: "postgres",
+        host: process.env.DB_HOST || "localhost",
+        database: process.env.DB_NAME || "postgres",
+        port: Number(process.env.DB_PORT) || 5432,
+        password: process.env.DB_PASSWORD || "postgres",
+        user: process.env.DB_USER || "postgres",
     },
-    test_pay: "284685063:TEST:YzI3ZDE4NjgxZDE5",
-    live_pay: "350862534:LIVE:ZTU4NDAxMTEyNTkw",
+    test_pay: process.env.TEST_PAY,
+    live_pay: process.env.LIVE_PAY,
     pic_dice:
+        process.env.PIC_DICE ||
         "https://www.boardgamesmaker.com/AttachFiles/WebsiteImages/Product_ItemBig/FI_8321.jpg",
-    time_out: 12,
-    free_time: 120,
-    free_pay1: 3000,
-    free_pay2: 1000,
-    free_pay3: 600,
-    owner: 373256429,
-    end_game_photo:
-        "AgACAgIAAxkBAAINM2DhogbBIr4Z880iUfWejSIvvSNiAAKTsjEbSFMISxRHygxIqW4eAQADAgADcwADIAQ",
-    decreased_energy_photo:
-        "AgACAgIAAxkBAAIOaGED-V0RSaYXSb_RDV2C9WTfCroaAAK1sTEbnqggSA8baPLrClf1AQADAgADcwADIAQ",
+    time_out: Number(process.env.TIME_OUT) || 12,
+    free_time: Number(process.env.FREE_TIME) || 120,
+    free_pay1: Number(process.env.FREE_PAY1) || 3000,
+    free_pay2: Number(process.env.FREE_PAY2) || 1000,
+    free_pay3: Number(process.env.FREE_PAY3) || 600,
+    owner: Number(process.env.OWNER) || 0,
+    end_game_photo: process.env.END_GAME_PHOTO,
+    decreased_energy_photo: process.env.DECREASED_ENERGY_PHOTO,
 };
