@@ -91,7 +91,7 @@ export async function move(
               steps = steps + 1, 
               last_jump = $1, 
               last_map_id = $2, 
-              balance = balance - 100, 
+              balance = balance - ${config.jump_cost}, 
               last_jump_time = NOW(), 
               level = COALESCE($3, level) 
           WHERE tg_id = $4`,

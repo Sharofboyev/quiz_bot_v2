@@ -23,4 +23,5 @@ export default {
     owner: Number(process.env.OWNER) || 0,
     end_game_photo: process.env.END_GAME_PHOTO,
     decreased_energy_photo: process.env.DECREASED_ENERGY_PHOTO,
+    jump_cost: Number(process.env.JUMP_COST) || 100,
 };
