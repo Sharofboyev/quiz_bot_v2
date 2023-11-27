@@ -4,3 +4,10 @@ export class NotFoundError extends Error {
         this.name = "NotFound";
     }
 }
+
+export class QuestionNotFoundError extends NotFoundError {
+    constructor(message?: string) {
+        super(message || "Question not found");
+        this.name = "QuestionNotFound";
+    }
+}

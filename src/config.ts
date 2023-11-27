@@ -21,7 +21,11 @@ export default {
     free_pay2: Number(process.env.FREE_PAY2) || 1000,
     free_pay3: Number(process.env.FREE_PAY3) || 600,
     owner: Number(process.env.OWNER) || 0,
-    end_game_photo: process.env.END_GAME_PHOTO,
-    decreased_energy_photo: process.env.DECREASED_ENERGY_PHOTO,
+    end_game_photo:
+        process.env.END_GAME_PHOTO ||
+        "AgACAgIAAxkBAAINM2DhogbBIr4Z880iUfWejSIvvSNiAAKTsjEbSFMISxRHygxIqW4eAQADAgADcwADIAQ",
+    decreased_energy_photo:
+        process.env.DECREASED_ENERGY_PHOTO ||
+        "AgACAgIAAxkBAAIOaGED-V0RSaYXSb_RDV2C9WTfCroaAAK1sTEbnqggSA8baPLrClf1AQADAgADcwADIAQ",
     jump_cost: Number(process.env.JUMP_COST) || 100,
 };
