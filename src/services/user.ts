@@ -9,6 +9,7 @@ import {
     MartialStatus,
     TgId,
     UserStatus,
+    UpdateUserDto,
 } from "../db/models/users";
 
 export class User {
@@ -20,7 +21,7 @@ export class User {
         return add_user(user);
     }
 
-    static async update(user: UserDto) {
+    static async update(user: UpdateUserDto) {
         update_user(user);
     }
 
@@ -34,6 +35,10 @@ export class User {
         }
     ) {
         return get_diary(tg_id, filter);
+    }
+
+    static is_admin(user: UserDto) {
+        return user.status == UserStatus.ADMIN;
     }
 }
 

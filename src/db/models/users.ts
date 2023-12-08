@@ -1,5 +1,5 @@
 import pool from "../index";
-import { quest_types } from "../../utils";
+import { getQuestName } from "../../utils";
 import { NotFoundError } from "./errors";
 
 export enum Avatar {
@@ -48,6 +48,31 @@ export type UserDto = {
     notified: boolean;
 };
 
+export type UpdateUserDto = {
+    first_name?: string;
+    last_name?: string;
+    balance?: number;
+    energy?: number;
+    avatar?: Avatar;
+    age?: number;
+    martial_status?: MartialStatus | null;
+    game_request?: string | null;
+    level?: number;
+    steps?: number;
+    state?: number;
+    last_map_id?: number;
+    last_jump?: number;
+    last_jump_time?: Date;
+    last_jump_cost?: number;
+    status?: UserStatus;
+    notification_time?: string;
+    free_jumps?: number;
+    free_jump_time?: Date;
+    start_energy?: number;
+    notified?: boolean;
+    tg_id: number;
+};
+
 export type DiaryPage = {
     level: number;
     map_id: number;
@@ -89,7 +114,7 @@ export async function get_user(tg_id: number) {
     if (rowCount === 0) throw new NotFoundError("User not found");
     else {
         const user = rows[0];
-        user.quest_type = quest_types(Number(user.quest_type));
+        user.quest_type = getQuestName(Number(user.quest_type));
         return user;
     }
 }
@@ -101,7 +126,7 @@ export async function add_user(user: UserDto) {
     );
 }
 
-export async function update_user(user: UserDto) {
+export async function update_user(user: UpdateUserDto) {
     await pool.query(
         `UPDATE users 
         SET 

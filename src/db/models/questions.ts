@@ -1,4 +1,4 @@
-import { quest_types } from "../../utils";
+import { getQuestName } from "../../utils";
 import pool from "../index";
 import { NotFoundError, QuestionNotFoundError } from "./errors";
 import { get_user } from "./users";

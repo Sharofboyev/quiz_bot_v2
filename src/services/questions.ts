@@ -23,11 +23,9 @@ export class QuestionService {
         return add_question(text, type);
     }
 
-    static async answer(
-        tg_id: number,
-        answer_type: AnswerType,
-        text_answer?: string
-    ) {
-        return answer(tg_id, answer_type, text_answer);
+    static async answer(tg_id: number, answer_type: AnswerType, memo?: string) {
+        return answer(tg_id, answer_type, memo);
     }
 }
+
+export { QuestType, AnswerType, Question };

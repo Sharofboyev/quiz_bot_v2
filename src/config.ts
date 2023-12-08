@@ -2,7 +2,7 @@ import { config } from "dotenv";
 config();
 
 export default {
-    token: process.env.TOKEN,
+    token: process.env.TOKEN || "",
     DB: {
         host: process.env.DB_HOST || "localhost",
         database: process.env.DB_NAME || "postgres",
