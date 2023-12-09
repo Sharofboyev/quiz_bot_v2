@@ -1,65 +1,20 @@
-import { MyTelegraf } from "../db/models/telegraf";
-import { Track } from "../services/track";
-import { User, Map, QuestionService, QuestType } from "../services";
+import { MyTelegraf } from "../modules/telegraf";
+import { User, QuestionService, QuestType, AnswerType } from "../services";
 import config from "../config";
-import moment from "moment";
-import ru from "../utils/ru";
+import { ru } from "../utils";
 import { start } from "./start";
 import {
-    getQuestName,
+    convertQuestTypeToAnswerType,
     prepareTextForChosenQuestion,
     prepareTextForTakingRest,
 } from "../utils";
+import { TgId, UserState } from "../types";
 
 export function listenMainEvents(bot: MyTelegraf) {
-    bot.use((ctx, next) => {
-        if (ctx.from) {
-            Track.add(
-                ctx.message || ctx.callbackQuery || ctx.preCheckoutQuery,
-                ctx.from.id
-            );
-        }
-        return next();
-    });
-
-    bot.on("successful_payment", async (ctx) => {
-        let user = await User.get(ctx.from.id);
-        let amount = ctx.message.successful_payment.total_amount / 100;
-        if (amount >= config.free_pay1) {
-            User.update({
-                tg_id: ctx.from.id,
-                balance: user.balance + Number(amount) - config.free_pay1,
-                free_jump_time: moment().add(config.free_time, "days").toDate(),
-            });
-        } else if (amount >= config.free_pay2) {
-            User.update({
-                ...user,
-                tg_id: ctx.from.id,
-                balance: user.balance + Number(amount) - config.free_pay2,
-                free_jumps: user.free_jumps + 11,
-            });
-        } else if (amount >= config.free_pay3) {
-            User.update({
-                tg_id: ctx.from.id,
-                balance: user.balance + Number(amount) - config.free_pay3,
-                free_jumps: user.free_jumps + 6,
-            });
-        } else {
-            User.update({
-                tg_id: ctx.from.id,
-                balance: user.balance + Number(amount),
-            });
-        }
-    });
-
-    bot.on("pre_checkout_query", (ctx) => {
-        Track.add(ctx.preCheckoutQuery, ctx.from.id);
-        ctx.answerPreCheckoutQuery(true);
-    });
-
+    // This controller used for handling question pick and rest pick events on pause cells
     bot.action(/get_\w+/, async (ctx) => {
         ctx.editMessageReplyMarkup(undefined);
-        const tg_id = ctx.callbackQuery.from.id;
+        const tg_id: TgId = ctx.callbackQuery.from.id;
         if (!ctx.callbackQuery || !ctx.callbackQuery.message) return;
         if (
             new Date(ctx.callbackQuery.message.date * 1000) <
@@ -70,7 +25,7 @@ export function listenMainEvents(bot: MyTelegraf) {
                 last_jump_cost: 0,
             });
             return ctx.reply(ru.late).then(() => {
-                start(ctx, tg_id);
+                start(ctx, ctx.callbackQuery.from);
             });
         }
         if (!("data" in ctx.callbackQuery)) return; // Just type narrowing here
@@ -111,10 +66,56 @@ export function listenMainEvents(bot: MyTelegraf) {
                     setTimeout(() => {
                         ctx.reply(prepareTextForTakingRest(user));
                         setTimeout(() => {
-                            start(ctx, tg_id);
+                            start(ctx, ctx.callbackQuery.from);
                         }, 3000);
                     }, 2000);
                 } else ctx.reply(ru.having_rest);
         }
+    });
+
+    bot.action(/set_\w+/, async (ctx) => {
+        ctx.editMessageReplyMarkup(undefined);
+        if (!("data" in ctx.callbackQuery)) return; // Just type narrowing here
+
+        const tg_id: TgId = ctx.callbackQuery.from.id;
+        let user = await User.get(tg_id);
+
+        // Parsing callback data to get type of question and intention of user
+        const regex = /set_(\d{1})(completed|incompleted|come_back)$/;
+        const match = ctx.callbackQuery.data.match(regex);
+        if (!match) return ctx.reply(ru.no_such_keyboard);
+        let type: QuestType = parseInt(match[1]);
+        let data = match[2];
+
+        if (data == "completed") {
+            await User.update({
+                tg_id,
+                state: UserState.SENDING_MEMO,
+                last_jump_cost: type,
+            });
+            return ctx.reply(ru.get_answer);
+        } else if (data == "incompleted") {
+            if (user.last_jump_cost < 0) {
+                // This means, last cell was type of Pause
+                await QuestionService.answer(
+                    tg_id,
+                    convertQuestTypeToAnswerType(QuestType.PAUSE, false)
+                );
+                await ctx.reply(ru.removed_energy);
+            } else {
+                await QuestionService.answer(
+                    tg_id,
+                    convertQuestTypeToAnswerType(type, false)
+                );
+                await ctx.reply(ru.removed_energy);
+            }
+        } else if (data == "come_back") {
+            await QuestionService.answer(tg_id, AnswerType.CANCEL_JUMP);
+            await ctx.reply(ru.came_back);
+        }
+        await User.update({ tg_id, state: UserState.IDLE, last_jump_cost: 0 });
+        setTimeout(() => {
+            return start(ctx, ctx.callbackQuery.from);
+        }, 2000);
     });
 }

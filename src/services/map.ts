@@ -6,7 +6,7 @@ import {
     move,
 } from "../db/models/map";
 import { QuestType } from "../db/models/questions";
-import ru from "../utils/ru";
+import ru from "../utils/lang";
 import { User } from "./user";
 
 export type JumpDto = {

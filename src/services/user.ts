@@ -1,23 +1,12 @@
-import {
-    UserDto,
-    add_user,
-    get_user,
-    update_user,
-    get_diary,
-    Avatar,
-    DiaryPage,
-    MartialStatus,
-    TgId,
-    UserStatus,
-    UpdateUserDto,
-} from "../db/models/users";
+import { add_user, get_user, update_user, get_diary } from "../db/models/users";
+import { UserDto, UpdateUserDto, UserStatus, AddUserDto } from "../types";
 
 export class User {
     static async get(tg_id: number) {
         return get_user(tg_id);
     }
 
-    static async add(user: UserDto) {
+    static async add(user: AddUserDto) {
         return add_user(user);
     }
 
@@ -27,7 +16,7 @@ export class User {
 
     static async get_diary(
         tg_id: number,
-        filter: {
+        filter?: {
             limit?: number;
             offset?: number;
             order?: "ASC" | "DESC";
@@ -42,4 +31,4 @@ export class User {
     }
 }
 
-export { UserDto, Avatar, DiaryPage, MartialStatus, TgId, UserStatus };
+export { UserDto };

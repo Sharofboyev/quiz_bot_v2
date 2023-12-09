@@ -2,12 +2,7 @@ import { QuestType } from "./questions";
 import pool from "../index";
 import config from "../../config";
 import { NotFoundError } from "./errors";
-
-export enum JumpType {
-    FREE_JUMP_TIME = "free_jump_time",
-    FREE_JUMPS = "free_jumps",
-    BALANCE = "balance",
-}
+import { JumpType } from "../../types";
 
 export async function add_image(
     map_id: number,

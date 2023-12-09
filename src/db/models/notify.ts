@@ -1,8 +1,8 @@
 import { Telegraf } from "telegraf";
 import pool from "..";
-import { TgId } from "./users";
 import config from "../../config";
-import ru from "../../utils/ru";
+import { TgId } from "../../types";
+import { ru } from "../../utils";
 
 export async function add_to_queue(tg_id: TgId, msg_id: number, type: any) {
     try {

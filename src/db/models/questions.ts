@@ -14,12 +14,15 @@ export enum QuestType {
 
 export enum AnswerType {
     CANCEL_JUMP = 0,
+    ANSWER_BLITZ = 1,
     ANSWER_QUESTION = 1,
     ANSWER_THANKFUL = 2,
     ANSWER_EXERCISE = 3,
+    NOT_ANSWER_BLITZ = 0,
     NOT_ANSWER_QUESTION = -1,
     NOT_ANSWER_THANKFUL = -2,
     NOT_ANSWER_EXERCISE = -3,
+    NOT_ANSWER_PAUSE = -4,
 }
 
 export type GetQuestionDto = {
@@ -58,14 +61,14 @@ export async function answer(tg_id: number, type: AnswerType, memo?: string) {
             "UPDATE turns SET status = FALSE WHERE id IN (SELECT id FROM turns WHERE tg_id = $1 AND status ORDER BY id DESC LIMIT 1)",
             [tg_id]
         );
-    } else {
+    } else if (type != AnswerType.NOT_ANSWER_PAUSE) {
         await pool.query(
             "UPDATE users SET energy = energy + $1 WHERE tg_id = $2",
             [type, tg_id]
         );
         await pool.query(
             "UPDATE turns SET memo = $1 WHERE id IN (SELECT id FROM turns WHERE tg_id = $2 AND status ORDER BY id DESC LIMIT 1)",
-            [answer, tg_id]
+            [memo, tg_id]
         );
     }
 }

@@ -7,7 +7,7 @@ import {
 } from "telegraf/typings/telegram-types";
 import * as tg from "telegraf/typings/core/types/typegram";
 import { FmtString } from "telegraf/typings/format";
-import { Track } from "../../services/track";
+import { Track } from "../services/track";
 
 export class CustomContext extends Context {
     async reply(

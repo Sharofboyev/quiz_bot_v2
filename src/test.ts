@@ -1,7 +1,7 @@
 import { Telegraf } from "telegraf";
 import { User } from "./services/user";
 import { replaceTemplateVars } from "./utils/index";
-import ru from "./utils/ru";
+import { ru } from "./utils/lang";
 import config from "./config";
 
 User.get(346686979)

@@ -1,87 +1,13 @@
 import pool from "../index";
 import { getQuestName } from "../../utils";
 import { NotFoundError } from "./errors";
-
-export enum Avatar {
-    CRONE = "crone",
-    PLANE = "plane",
-    CAT = "cat",
-}
-
-export type MartialStatus =
-    | "Не замужем/не женат"
-    | "Не хочу говорить"
-    | "Замужем/женат";
-
-export enum UserStatus {
-    USER = 0,
-    PLAYER = 1,
-    ADMIN = 2,
-}
-
-export type TgId = number;
-
-export type UserDto = {
-    id: number;
-    first_name: string;
-    last_name: string;
-    tg_id: number;
-    balance: number;
-    energy: number;
-    avatar: Avatar;
-    age: number;
-    martial_status?: MartialStatus | null;
-    game_request?: string | null;
-    level: number;
-    steps: number;
-    state: number;
-    last_map_id: number;
-    last_jump: number;
-    last_jump_time?: Date;
-    last_jump_cost: number;
-    status: UserStatus;
-    notification_time?: string;
-    created_time: Date;
-    free_jumps: number;
-    free_jump_time: Date;
-    start_energy: number;
-    notified: boolean;
-};
-
-export type UpdateUserDto = {
-    first_name?: string;
-    last_name?: string;
-    balance?: number;
-    energy?: number;
-    avatar?: Avatar;
-    age?: number;
-    martial_status?: MartialStatus | null;
-    game_request?: string | null;
-    level?: number;
-    steps?: number;
-    state?: number;
-    last_map_id?: number;
-    last_jump?: number;
-    last_jump_time?: Date;
-    last_jump_cost?: number;
-    status?: UserStatus;
-    notification_time?: string;
-    free_jumps?: number;
-    free_jump_time?: Date;
-    start_energy?: number;
-    notified?: boolean;
-    tg_id: number;
-};
-
-export type DiaryPage = {
-    level: number;
-    map_id: number;
-    jump: number;
-    time: string;
-    memo: string;
-    question_text: string;
-    cost: number;
-};
+import {
+    UserDto,
+    UpdateUserDto,
+    DiaryPage,
+    TgId,
+    AddUserDto,
+} from "../../types";
 
 export async function get_user(tg_id: number) {
     const { rows, rowCount } = await pool.query<
@@ -119,7 +45,7 @@ export async function get_user(tg_id: number) {
     }
 }
 
-export async function add_user(user: UserDto) {
+export async function add_user(user: AddUserDto) {
     await pool.query(
         "INSERT INTO users(tg_id, first_name, last_name) VALUES ($1, $2, $3)",
         [user.tg_id, user.first_name, user.last_name]
@@ -173,13 +99,14 @@ export async function update_user(user: UpdateUserDto) {
 
 export async function get_diary(
     tg_id: TgId,
-    filter: {
+    filter?: {
         limit?: number;
         offset?: number;
         order?: "ASC" | "DESC";
         level?: number;
     }
 ) {
+    if (!filter) filter = {};
     const { limit = 10, offset = 0, order = "DESC", level } = filter;
     let pages = (
         await pool.query<DiaryPage>(

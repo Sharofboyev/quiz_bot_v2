@@ -1,16 +1,24 @@
-import { CustomContext, MyTelegraf } from "../db/models/telegraf";
+import { CustomContext, MyTelegraf } from "../modules/telegraf";
 import { User } from "../services";
-import ru from "../utils/ru";
+import { ru } from "../utils";
 
 export function listenStart(bot: MyTelegraf) {
     bot.start(async (ctx) => {
-        return start(ctx, ctx.from.id);
+        return start(ctx, ctx.from);
     });
 }
 
-export async function start(ctx: CustomContext, tg_id: number) {
+export async function start(
+    ctx: CustomContext,
+    from: { id: number; first_name: string; last_name?: string }
+) {
+    const tg_id = from.id;
     console.log(tg_id);
     let user = await User.get(tg_id);
+    if (!user) {
+        await User.add({ ...from, tg_id });
+        user = await User.get(tg_id);
+    }
     let keyboard = [
         [{ text: ru.dice }, { text: ru.map }],
         [{ text: ru.diary }, { text: ru.settings }],
