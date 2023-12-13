@@ -1,18 +1,26 @@
 import {
     add_question,
     answer,
-    AnswerType,
-    AssignQuestionDto,
-    GetQuestionDto,
-    QuestType,
-    Question,
     assign_question,
-    get_question,
+    get_last_question,
+    get_new_question,
 } from "../db/models/questions";
 
+import {
+    AnswerType,
+    AssignQuestionDto,
+    GetNewQuestionDto,
+    QuestType,
+    Question,
+} from "../types";
+
 export class QuestionService {
-    static async get(get_question_dto: GetQuestionDto) {
-        return get_question(get_question_dto);
+    static async getLastQuestion(tg_id: number) {
+        return get_last_question(tg_id);
+    }
+
+    static async get_new_question(get_question_dto: GetNewQuestionDto) {
+        return get_new_question(get_question_dto);
     }
 
     static async assign(assign_question_dto: AssignQuestionDto) {

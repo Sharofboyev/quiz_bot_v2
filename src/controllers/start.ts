@@ -13,7 +13,6 @@ export async function start(
     from: { id: number; first_name: string; last_name?: string }
 ) {
     const tg_id = from.id;
-    console.log(tg_id);
     let user = await User.get(tg_id);
     if (!user) {
         await User.add({ ...from, tg_id });
@@ -31,9 +30,7 @@ export async function start(
 
     ctx.reply(ru.start, {
         reply_markup: {
-            inline_keyboard: [
-                [{ text: ru.change_lang, callback_data: "change_lang" }],
-            ],
+            keyboard,
         },
     });
 }

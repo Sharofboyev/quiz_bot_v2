@@ -7,12 +7,13 @@ import {
     DiaryPage,
     TgId,
     AddUserDto,
+    CellType,
 } from "../../types";
 
 export async function get_user(tg_id: number) {
     const { rows, rowCount } = await pool.query<
         UserDto & {
-            quest_type: string;
+            cell_type: CellType;
             question: string;
             notify: string;
         }
@@ -40,7 +41,7 @@ export async function get_user(tg_id: number) {
     if (rowCount === 0) throw new NotFoundError("User not found");
     else {
         const user = rows[0];
-        user.quest_type = getQuestName(Number(user.quest_type));
+        user.cell_type = getQuestName(Number(user.cell_type));
         return user;
     }
 }
@@ -107,7 +108,8 @@ export async function get_diary(
     }
 ) {
     if (!filter) filter = {};
-    const { limit = 10, offset = 0, order = "DESC", level } = filter;
+    const { limit = 10, offset = 0, order = "DESC" } = filter;
+
     let pages = (
         await pool.query<DiaryPage>(
             `
@@ -127,12 +129,12 @@ export async function get_diary(
             turns.tg_id = $1 
             AND turns.status 
             AND turns.quest_id NOT IN (SELECT id FROM questions WHERE type = 0) 
-            AND (COALESCE($2, turns.level) = turns.level)
           ORDER BY 
-            turns.id ${order}
-          LIMIT $3 OFFSET $4;`,
-            [tg_id, level, limit, offset]
+            turns.id ${order}`,
+            [tg_id]
         )
     ).rows;
+
+    // todo: add pagination and filter by level
     return pages;
 }

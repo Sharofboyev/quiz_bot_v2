@@ -1,3 +1,5 @@
+import { ru } from "../utils";
+
 export enum JumpType {
     FREE_JUMP_TIME = "free_jump_time",
     FREE_JUMPS = "free_jumps",
@@ -8,6 +10,7 @@ export enum Avatar {
     CRONE = "crone",
     PLANE = "plane",
     CAT = "cat",
+    MAP = "map",
 }
 
 export const changeUser = [
@@ -36,4 +39,35 @@ export enum UserStatus {
     USER = 0,
     PLAYER = 1,
     ADMIN = 2,
+}
+
+export enum QuestType {
+    BLITZ = 0,
+    QUESTION = 1,
+    THANKFUL = 2,
+    EXERCISE = 3,
+    PAUSE = 4,
+    END = 5,
+}
+
+export enum AnswerType {
+    CANCEL_JUMP = 0,
+    ANSWER_BLITZ = 1,
+    ANSWER_QUESTION = 1,
+    ANSWER_THANKFUL = 2,
+    ANSWER_EXERCISE = 3,
+    NOT_ANSWER_BLITZ = 0,
+    NOT_ANSWER_QUESTION = -1,
+    NOT_ANSWER_THANKFUL = -2,
+    NOT_ANSWER_EXERCISE = -3,
+    NOT_ANSWER_PAUSE = -4,
+}
+
+export enum CellType {
+    BLITZ = "Блиц-вопрос",
+    QUESTION = "Вопрос",
+    EXERCISE = "Задание",
+    THANKFUL = "Благодарность",
+    PAUSE = "Пауза",
+    END = "Конец",
 }

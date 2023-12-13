@@ -1,4 +1,5 @@
 import { AnswerType, QuestType, Question, UserDto } from "../services";
+import { CellType } from "../types";
 import { ru } from "./lang";
 
 /**
@@ -6,13 +7,13 @@ import { ru } from "./lang";
  * @param quest_id ид типа вопроса. 0 - блиц вопрос,  1 - вопрос, 2 - блогадорность, 3 - задание, 4 - пауза, 5 - конец
  * @returns возвращает название типа вопроса
  */
-export function getQuestName(quest_id: QuestType) {
-    if (quest_id == QuestType.BLITZ) return ru.blits;
-    else if (quest_id == QuestType.QUESTION) return ru.question;
-    else if (quest_id == QuestType.THANKFUL) return ru.thankful;
-    else if (quest_id == QuestType.EXERCISE) return ru.exercise;
-    else if (quest_id == QuestType.PAUSE) return ru.pause;
-    else return ru.end;
+export function getQuestName(quest_id: QuestType): CellType {
+    if (quest_id == QuestType.BLITZ) return CellType.BLITZ;
+    else if (quest_id == QuestType.QUESTION) return CellType.QUESTION;
+    else if (quest_id == QuestType.THANKFUL) return CellType.THANKFUL;
+    else if (quest_id == QuestType.EXERCISE) return CellType.EXERCISE;
+    else if (quest_id == QuestType.PAUSE) return CellType.PAUSE;
+    else return CellType.END;
 }
 
 export function prepareTextForChosenQuestion(question: Question) {

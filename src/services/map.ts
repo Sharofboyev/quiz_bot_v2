@@ -1,33 +1,13 @@
-import {
-    JumpType,
-    add_image,
-    get_image,
-    get_last_jump,
-    move,
-} from "../db/models/map";
-import { QuestType } from "../db/models/questions";
-import ru from "../utils/lang";
+import { add_image, get_cell, get_last_jump, move } from "../db/models/map";
+import { QuestType } from "./questions";
+import { ru } from "../utils";
 import { User } from "./user";
-
-export type JumpDto = {
-    tg_id: number;
-    jump: number;
-};
-
-export type JumpResponseDto = {
-    jump?: {
-        jump_type: JumpType;
-        map_id: number;
-        level: number;
-        image: string;
-    };
-    can_jump: boolean;
-    error?: string;
-};
+import { Avatar, JumpType } from "../types";
+import { JumpDto, JumpResponseDto } from "../types";
 
 export class Map {
-    static async get_image(map_id: number, type: QuestType, level: number) {
-        return get_image(map_id, type, level);
+    static async get_image(map_id: number, avatar: Avatar, level: number) {
+        return get_cell(map_id, avatar, level);
     }
 
     static async add_image(
@@ -45,9 +25,7 @@ export class Map {
 
     static async jump(data: JumpDto): Promise<JumpResponseDto> {
         const { tg_id, jump } = data;
-        let { map_id, level, jump_type, can_jump } = await get_last_jump(
-            tg_id
-        );
+        let { map_id, level, jump_type, can_jump } = await get_last_jump(tg_id);
         if (!can_jump) {
             return {
                 error: ru.jumps_limited,
@@ -65,9 +43,9 @@ export class Map {
         } else {
             jumpType = JumpType.BALANCE;
         }
-        
+
         await move(jump, map_id, level, tg_id, jump_type);
-        const image = await get_image(map_id, QuestType.QUESTION, level);
+        const image = await get_cell(map_id, user.avatar, level);
         return {
             jump: {
                 jump_type,

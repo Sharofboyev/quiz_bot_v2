@@ -1,8 +1,7 @@
-import { QuestType } from "./questions";
 import pool from "../index";
 import config from "../../config";
 import { NotFoundError } from "./errors";
-import { JumpType } from "../../types";
+import { Avatar, JumpType, QuestType } from "../../types";
 
 export async function add_image(
     map_id: number,
@@ -20,15 +19,17 @@ export async function add_image(
     );
 }
 
-export async function get_image(
+export async function get_cell(
     map_id: number,
-    type: QuestType,
+    avatar: Avatar,
     level: number
-) {
+): Promise<void> {
     const { rows, rowCount } = await pool.query(
         "SELECT file_id FROM map WHERE type = $1 AND map_id = $2 AND level = $3",
-        [type, map_id, level]
+        [avatar, map_id, level]
     );
+
+    // todo: rename column name type to avatar
     if (rowCount === 0) throw new NotFoundError("Image not found");
     else return rows[0].file_id;
 }

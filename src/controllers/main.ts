@@ -37,7 +37,7 @@ export function listenMainEvents(bot: MyTelegraf) {
             case "question":
                 cost -= 5;
                 const questionType: QuestType = -cost;
-                let question = await QuestionService.get({
+                let question = await QuestionService.get_new_question({
                     tg_id,
                     type: questionType,
                 });
@@ -63,13 +63,13 @@ export function listenMainEvents(bot: MyTelegraf) {
                 if (user.last_map_id == 0 && user.level > 1) {
                     User.update({ tg_id, start_energy: user.energy });
                     await ctx.replyWithPhoto(config.end_game_photo);
-                    setTimeout(() => {
-                        ctx.reply(prepareTextForTakingRest(user));
-                        setTimeout(() => {
-                            start(ctx, ctx.callbackQuery.from);
+                    setTimeout(async () => {
+                        await ctx.reply(prepareTextForTakingRest(user));
+                        setTimeout(async () => {
+                            await start(ctx, ctx.callbackQuery.from);
                         }, 3000);
                     }, 2000);
-                } else ctx.reply(ru.having_rest);
+                } else await ctx.reply(ru.having_rest);
         }
     });
 
@@ -117,5 +117,53 @@ export function listenMainEvents(bot: MyTelegraf) {
         setTimeout(() => {
             return start(ctx, ctx.callbackQuery.from);
         }, 2000);
+    });
+
+    bot.hears(ru.credits, async (ctx) => {
+        await ctx.replyWithPhoto(ru.author_photo).then(() => {
+            setTimeout(() => {
+                ctx.reply(ru.founders);
+            }, 1500);
+        });
+    });
+
+    bot.hears(ru.rules, async (ctx) => {
+        return await ctx.replyWithDocument(config.rulesFileId);
+    });
+
+    bot.hears(ru.add_question, async (ctx, next) => {
+        let user = await User.get(ctx.from.id);
+        if (User.is_admin(user))
+            return await ctx.reply(ru.question_types, {
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: ru.question,
+                                callback_data: "question#_#1",
+                            },
+                            {
+                                text: ru.thankful,
+                                callback_data: "question#_#2",
+                            },
+                            {
+                                text: ru.exercise,
+                                callback_data: "question#_#3",
+                            },
+                        ],
+                        [
+                            {
+                                text: ru.capital_question,
+                                callback_data: "question#_#0",
+                            },
+                        ],
+                    ],
+                },
+            });
+        else return next();
+    });
+
+    bot.hears(ru.main_menu, (ctx) => {
+        return start(ctx, ctx.from);
     });
 }

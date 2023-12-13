@@ -8,7 +8,6 @@ export function sender_diary(
     pages: DiaryPage[],
     cb: (data: { message: string; keyboard: InlineKeyboardButton[][] }) => void
 ) {
-    const amount = pages.length - index;
     const end = Math.min(index + 9, pages.length);
 
     const message = buildMessage(index, end, pages);
@@ -21,21 +20,22 @@ function buildMessage(index: number, end: number, pages: DiaryPage[]) {
     let message = `${index}-${end} из ${pages.length}\n`;
 
     for (let i = index - 1; i < end; i++) {
-        message += `\n${i + 2 - index}. ${ru.level}: ${pages[i].level}\n${
-            ru.map_id
-        }: ${pages[i].map_id}\n${ru.time}: ${pages[i].time}`;
+        message += `\n${i + 1}. ${ru.level}: ${pages[i].level} ${ru.map_id}: ${
+            pages[i].map_id
+        }\n${ru.time}: ${pages[i].time}`;
     }
 
     return message;
 }
 
 function buildKeyboard(index: number, end: number, pages: DiaryPage[]) {
+    // index is the start index of the page (1, 11, 21, ...)
     const keyboard: InlineKeyboardButton[][] = [];
     const buttonsPerRow = Math.ceil((end - index) / 2);
 
     let currentRow: InlineKeyboardButton[] = [];
     for (let i = index - 1; i < end; i++) {
-        const text = String(i + 2 - index);
+        const text = String(i + 1);
         const callbackData = `diary#_#${i}`;
 
         currentRow.push({ text, callback_data: callbackData });

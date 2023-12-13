@@ -1,4 +1,4 @@
-import { Avatar, UserStatus } from "./constants";
+import { Avatar, JumpType, QuestType, UserStatus } from "./constants";
 
 export type MartialStatus =
     | "Не замужем/не женат"
@@ -73,4 +73,45 @@ export type DiaryPage = {
     memo: string;
     question_text: string;
     cost: number;
+};
+
+export type GetNewQuestionDto = {
+    tg_id: number;
+    type: QuestType;
+    blitz_question_id?: number;
+};
+
+export type AssignQuestionDto = {
+    tg_id: number;
+    level: number;
+    question_id: number;
+    map_id: number;
+};
+
+export type Question = {
+    id: number;
+    text: string;
+    type: QuestType;
+    created_time: Date;
+};
+
+export type JumpResponseDto = {
+    jump?: {
+        jump_type: JumpType;
+        map_id: number;
+        level: number;
+        image: string;
+    };
+    can_jump: boolean;
+    error?: string;
+};
+
+export type JumpDto = {
+    tg_id: number;
+    jump: number;
+};
+
+export type MapCell = {
+    image: string;
+    questType: QuestType;
 };

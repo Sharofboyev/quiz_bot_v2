@@ -5,7 +5,13 @@ import { ru } from "../utils";
 import { start } from "./start";
 
 export function handleError(bot: MyTelegraf) {
+    bot.on("text", (ctx) => {
+        ctx.reply(ru.no_such_keyboard);
+    });
+
     bot.catch(async (err, ctx) => {
+        console.log("Here is the error");
+        console.log(err);
         if (err instanceof NotFoundError) {
             const from =
                 ctx.from ||

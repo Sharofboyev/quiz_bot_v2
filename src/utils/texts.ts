@@ -20,3 +20,7 @@ export function replaceTemplateVars(template: string, replacements: Object) {
         (match: any, key: string) => replacements[key] || ""
     );
 }
+
+export function upperFirstLetter(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}

@@ -28,4 +28,7 @@ export default {
         process.env.DECREASED_ENERGY_PHOTO ||
         "AgACAgIAAxkBAAIOaGED-V0RSaYXSb_RDV2C9WTfCroaAAK1sTEbnqggSA8baPLrClf1AQADAgADcwADIAQ",
     jump_cost: Number(process.env.JUMP_COST) || 100,
+    rulesFileId:
+        process.env.RULES_FILE_ID ||
+        "BQACAgIAAxkBAAIJEWDQu7W3qeJD-318PVghRHhc6P8_AAI9EgACrJIoSuehu3WSs19_HwQ",
 };

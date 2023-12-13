@@ -90,7 +90,7 @@ export const ru = {
     not_found: "Не найдено",
     add_question: "Добавить вопрос",
     game_rule:
-        "BQACAgIAAxkBAAIJEWDQu7W3qeJD-318PVghRHhc6P8_AAI9EgACrJIoSuehu3WSs19_HwQ",
+        "",
     pay: "Платеж",
     question_types: "Что вы хотите добавить?",
     send_question: "Отправьте текст вопроса",

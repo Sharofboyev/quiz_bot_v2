@@ -1,49 +1,12 @@
-import { getQuestName } from "../../utils";
 import pool from "../index";
-import { NotFoundError, QuestionNotFoundError } from "./errors";
-import { get_user } from "./users";
-
-export enum QuestType {
-    BLITZ = 0,
-    QUESTION = 1,
-    THANKFUL = 2,
-    EXERCISE = 3,
-    PAUSE = 4,
-    END = 5,
-}
-
-export enum AnswerType {
-    CANCEL_JUMP = 0,
-    ANSWER_BLITZ = 1,
-    ANSWER_QUESTION = 1,
-    ANSWER_THANKFUL = 2,
-    ANSWER_EXERCISE = 3,
-    NOT_ANSWER_BLITZ = 0,
-    NOT_ANSWER_QUESTION = -1,
-    NOT_ANSWER_THANKFUL = -2,
-    NOT_ANSWER_EXERCISE = -3,
-    NOT_ANSWER_PAUSE = -4,
-}
-
-export type GetQuestionDto = {
-    tg_id: number;
-    type: QuestType;
-    blitz_question_id?: number;
-};
-
-export type AssignQuestionDto = {
-    tg_id: number;
-    level: number;
-    question_id: number;
-    map_id: number;
-};
-
-export type Question = {
-    id: number;
-    text: string;
-    type: QuestType;
-    created_time: Date;
-};
+import { QuestionNotFoundError } from "./errors";
+import {
+    QuestType,
+    AnswerType,
+    Question,
+    GetNewQuestionDto,
+    AssignQuestionDto,
+} from "../../types";
 
 /**
  *
@@ -73,8 +36,8 @@ export async function answer(tg_id: number, type: AnswerType, memo?: string) {
     }
 }
 
-export async function get_question(
-    get_question_dto: GetQuestionDto
+export async function get_new_question(
+    get_question_dto: GetNewQuestionDto
 ): Promise<Question> {
     const { type, blitz_question_id: id = 1, tg_id } = get_question_dto;
     let questions: Question[];
@@ -126,4 +89,22 @@ export async function add_question(text: string, type: QuestType) {
         text,
         type,
     ]);
+}
+
+export async function get_last_question(
+    tg_id: number
+): Promise<Question | null> {
+    const { rows, rowCount } = await pool.query<Question>(
+        `SELECT 
+            * 
+        FROM 
+            questions 
+        WHERE 
+            id = (
+                SELECT quest_id FROM turns WHERE tg_id = $1 ORDER BY id DESC LIMIT 1
+            )`,
+        [tg_id]
+    );
+    if (rowCount == 0) return null;
+    return rows[0];
 }
