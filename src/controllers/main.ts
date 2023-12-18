@@ -1,5 +1,6 @@
 import { MyTelegraf } from "../modules/telegraf";
-import { User, QuestionService, QuestType, AnswerType } from "../services";
+import { User, QuestionService } from "../services";
+import { QuestType, AnswerType } from "../types";
 import config from "../config";
 import { ru } from "../utils";
 import { start } from "./start";

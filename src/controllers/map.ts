@@ -2,8 +2,14 @@ import { InlineKeyboardButton } from "telegraf/typings/core/types/typegram";
 import config from "../config";
 import { MyTelegraf } from "../modules/telegraf";
 import { Map, QuestionService, User } from "../services";
-import { Avatar } from "../types";
-import { ru, upperFirstLetter } from "../utils";
+import { Avatar, Jump, JumpType, QuestType } from "../types";
+import {
+    prepareAnswerKeyboard,
+    prepareJumpText,
+    ru,
+    upperFirstLetter,
+} from "../utils";
+import { NotFoundError, QuestionNotFoundError } from "../db/models/errors";
 
 export function controlMapInteractions(bot: MyTelegraf) {
     bot.hears(ru.map, async (ctx) => {
@@ -30,99 +36,45 @@ export function controlMapInteractions(bot: MyTelegraf) {
                 question.text;
         }
 
-        const image = await Map.get_image(last_map_id, avatar, level);
-        await ctx.replyWithPhoto(image, {
+        const cell = await Map.get_cell_info(last_map_id, avatar, level);
+        await ctx.replyWithPhoto(cell.image, {
             caption: message,
         });
     });
 
     bot.hears(ru.dice, async (ctx) => {
         let user = await User.get(ctx.from.id);
-        const { can_jump, error, jump } = await Map.jump({
-            tg_id: ctx.from.id,
-            jump: 1,
-        });
-        if (!can_jump) return ctx.reply(error as string);
 
-        if (ctx.from.id != config.owner) {
-            return ctx.reply(ru.jumps_limited);
-        }
-        if (
-            user.free_jumps <= 0 &&
-            user.balance < 100 &&
-            user.free_jump_time < new Date()
-        ) {
-            return ctx.reply(ru.no_free_jumps);
+        const { can_jump, error, jump_type } = await Map.canJump(user.tg_id);
+        if (!can_jump) {
+            return ctx.reply(error as string);
         }
         ctx.replyWithDice().then(async (data) => {
-            let new_turn = await Map.jump({
-                tg_id: ctx.from.id,
-                jump: data.dice.value,
-            });
-            if (new_turn.error) console.log(new_turn.error);
-            if (!new_turn.can_jump) {
-                return ctx.reply(new_turn.error as string);
-            }
-            setTimeout(async () => {
-                let keyboard: InlineKeyboardButton[][];
-                let id = new_turn.jump.;
-                if ([1, 2, 3].includes(id)) {
-                    keyboard = [
-                        [
-                            {
-                                text: ru.completed,
-                                callback_data: `set_${id}completed`,
-                            },
-                            {
-                                text: ru.incompleted,
-                                callback_data: `set_${id}incompleted`,
-                            },
-                        ],
-                        [
-                            {
-                                text: ru.come_back,
-                                callback_data: `set_${id}come_back`,
-                            },
-                        ],
-                    ];
-                } else {
-                    keyboard = [
-                        [
-                            { text: ru.get_rest, callback_data: "get_rest" },
-                            {
-                                text: ru.get_question,
-                                callback_data: "get_question",
-                            },
-                        ],
-                        [
-                            {
-                                text: ru.get_exercise,
-                                callback_data: "get_exercise",
-                            },
-                        ],
-                    ];
+            try {
+                let jump = await Map.jump({
+                    user: user,
+                    jump: data.dice.value,
+                    jump_type: jump_type as JumpType,
+                });
+
+                setTimeout(async () => {
+                    const keyboard = prepareAnswerKeyboard(jump.qustion_type);
+                    await ctx.replyWithPhoto(jump.image);
+
+                    const message = prepareJumpText(
+                        user,
+                        jump,
+                        data.dice.value
+                    );
+                    return ctx.reply(message, {
+                        reply_markup: { inline_keyboard: keyboard },
+                    });
+                }, 5000);
+            } catch (err) {
+                if (err instanceof QuestionNotFoundError) {
+                    return ctx.reply(ru.no_more_questions);
                 }
-                await ctx.replyWithPhoto(new_turn.map);
-                return ctx.reply(
-                    ru.dice_value +
-                        " " +
-                        data.dice.value +
-                        ".\n" +
-                        ru.cell_type +
-                        ": " +
-                        new_turn.quest_type +
-                        "\n" +
-                        ru.map_id.substr(0, 1).toUpperCase() +
-                        ru.map_id.substr(1) +
-                        ": " +
-                        new_turn.map_id +
-                        "\n\n " +
-                        new_turn.question +
-                        "\n\n___________________\n" +
-                        ru[`note${new_turn.quest_type_id}`],
-                    { reply_markup: { inline_keyboard: keyboard } }
-                );
-            }, 5000);
+            }
         });
     });
 }

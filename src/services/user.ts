@@ -30,5 +30,3 @@ export class User {
         return user.status == UserStatus.ADMIN;
     }
 }
-
-export { UserDto };

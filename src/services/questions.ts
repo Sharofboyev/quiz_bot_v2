@@ -35,5 +35,3 @@ export class QuestionService {
         return answer(tg_id, answer_type, memo);
     }
 }
-
-export { QuestType, AnswerType, Question };

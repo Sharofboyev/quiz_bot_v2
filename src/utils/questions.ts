@@ -1,4 +1,5 @@
-import { AnswerType, QuestType, Question, UserDto } from "../services";
+import { InlineKeyboardButton } from "telegraf/typings/core/types/typegram";
+import { AnswerType, QuestType, Question } from "../types";
 import { CellType } from "../types";
 import { ru } from "./lang";
 
@@ -49,4 +50,49 @@ export function convertQuestTypeToAnswerType(
             : AnswerType.NOT_ANSWER_EXERCISE;
     else if (questType == QuestType.PAUSE) return AnswerType.NOT_ANSWER_PAUSE;
     else return AnswerType.CANCEL_JUMP;
+}
+
+export function prepareAnswerKeyboard(question_type: QuestType) {
+    let keyboard: InlineKeyboardButton[][] = [];
+    if (
+        [QuestType.QUESTION, QuestType.THANKFUL, QuestType.EXERCISE].includes(
+            question_type
+        )
+    ) {
+        keyboard = [
+            [
+                {
+                    text: ru.completed,
+                    callback_data: `set_${question_type}completed`,
+                },
+                {
+                    text: ru.incompleted,
+                    callback_data: `set_${question_type}incompleted`,
+                },
+            ],
+            [
+                {
+                    text: ru.come_back,
+                    callback_data: `set_${question_type}come_back`,
+                },
+            ],
+        ];
+    } else {
+        keyboard = [
+            [
+                { text: ru.get_rest, callback_data: "get_rest" },
+                {
+                    text: ru.get_question,
+                    callback_data: "get_question",
+                },
+            ],
+            [
+                {
+                    text: ru.get_exercise,
+                    callback_data: "get_exercise",
+                },
+            ],
+        ];
+    }
+    return keyboard;
 }

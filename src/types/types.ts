@@ -95,20 +95,25 @@ export type Question = {
     created_time: Date;
 };
 
-export type JumpResponseDto = {
-    jump?: {
-        jump_type: JumpType;
-        map_id: number;
-        level: number;
-        image: string;
-    };
+export type Jump = {
+    jump_type: JumpType;
+    map_id: number;
+    level: number;
+    image: string;
+    qustion_type: QuestType;
+    question_text: string;
+};
+
+export type CanJumpDto = {
     can_jump: boolean;
     error?: string;
+    jump_type?: JumpType;
 };
 
 export type JumpDto = {
-    tg_id: number;
     jump: number;
+    user: UserDto;
+    jump_type: JumpType;
 };
 
 export type MapCell = {

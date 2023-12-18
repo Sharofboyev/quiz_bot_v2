@@ -1,9 +1,6 @@
-import {
-    InlineKeyboardButton,
-    KeyboardButton,
-} from "telegraf/typings/core/types/typegram";
+import { KeyboardButton } from "telegraf/typings/core/types/typegram";
 import { MyTelegraf } from "../modules/telegraf";
-import { Map, User } from "../services";
+import { User } from "../services";
 import { prepareUserInfo, ru, sender_diary } from "../utils";
 import { UserState, changeUser } from "../types";
 
