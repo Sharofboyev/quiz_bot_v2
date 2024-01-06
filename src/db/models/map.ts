@@ -24,14 +24,21 @@ export async function get_cell_info(
     avatar: Avatar,
     level: number
 ): Promise<MapCell> {
-    const { rows, rowCount } = await pool.query<MapCell>(
+    const { rows, rowCount } = await pool.query<{
+        file_id: string;
+        quest_type: QuestType;
+    }>(
         "SELECT file_id, quest_type FROM map WHERE type = $1 AND map_id = $2 AND level = $3",
         [avatar, map_id, level]
     );
 
     // todo: rename column name type to avatar
     if (rowCount === 0) throw new NotFoundError("Image not found");
-    else return rows[0];
+    else
+        return {
+            image: rows[0].file_id,
+            questType: rows[0].quest_type,
+        };
 }
 
 export async function get_last_jump(tg_id: number) {

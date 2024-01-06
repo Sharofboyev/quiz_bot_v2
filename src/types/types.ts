@@ -34,28 +34,7 @@ export type UserDto = {
     notified: boolean;
 };
 
-export type UpdateUserDto = {
-    first_name?: string;
-    last_name?: string;
-    balance?: number;
-    energy?: number;
-    avatar?: Avatar;
-    age?: number;
-    martial_status?: MartialStatus | null;
-    game_request?: string | null;
-    level?: number;
-    steps?: number;
-    state?: number;
-    last_map_id?: number;
-    last_jump?: number;
-    last_jump_time?: Date;
-    last_jump_cost?: number;
-    status?: UserStatus;
-    notification_time?: string;
-    free_jumps?: number;
-    free_jump_time?: Date;
-    start_energy?: number;
-    notified?: boolean;
+export type UpdateUserDto = Partial<UserDto> & {
     tg_id: number;
 };
 

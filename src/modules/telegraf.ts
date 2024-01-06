@@ -8,6 +8,13 @@ import {
 import * as tg from "telegraf/typings/core/types/typegram";
 import { FmtString } from "telegraf/typings/format";
 import { Track } from "../services/track";
+import ApiClient from "telegraf/typings/core/network/client";
+
+type Tail<T> = T extends [unknown, ...infer U] ? U : never;
+
+type Shorthand<FName extends Exclude<keyof Telegram, keyof ApiClient>> = Tail<
+    Parameters<Telegram[FName]>
+>;
 
 export class CustomContext extends Context {
     async reply(
@@ -20,10 +27,9 @@ export class CustomContext extends Context {
     }
 
     async replyWithPhoto(
-        photo: tg.InputFile,
-        extra?: ExtraReplyMessage
+        ...args: Shorthand<"sendPhoto">
     ): Promise<tg.Message.PhotoMessage> {
-        const resp = await super.replyWithPhoto(photo, extra);
+        const resp = await super.replyWithPhoto(...args);
         Track.add(resp, 0);
         return resp;
     }

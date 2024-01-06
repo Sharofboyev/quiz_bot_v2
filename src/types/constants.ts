@@ -11,6 +11,7 @@ export enum Avatar {
     PLANE = "plane",
     CAT = "cat",
     MAP = "map",
+    AVATARS = "avatar",
 }
 
 export const changeUser = [
@@ -24,8 +25,16 @@ export const changeUser = [
 ];
 
 export enum UserState {
+    NEW_USER = 0,
+    ASKED_NAME = 1,
+    ASKED_AGE = 2,
+    ASKED_MARTIAL_STATUS = 3,
+    ASKED_GAME_REQUEST = 4,
+    ASKED_TO_CHOOSE_AVATAR = 5,
     IDLE = 6,
+    ADDING_QUESTION = 7,
     SENDING_MEMO = 11,
+    CAPITAL_START = 22,
     CHANGE_FIRST_NAME = -1,
     CHANGE_LAST_NAME = -2,
     CHANGE_AGE = -3,
@@ -36,7 +45,7 @@ export enum UserState {
 }
 
 export enum UserStatus {
-    USER = 0,
+    NEW_USER = 0,
     PLAYER = 1,
     ADMIN = 2,
 }

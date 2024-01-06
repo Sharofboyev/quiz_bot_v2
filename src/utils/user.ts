@@ -97,6 +97,32 @@ export function prepareUserInfo(user: UserDto) {
     return message;
 }
 
+export function convertToAvatar(ruAvatar: string): Avatar {
+    switch (ruAvatar) {
+        case ru.crone:
+            return Avatar.CRONE;
+        case ru.cat:
+            return Avatar.CAT;
+        case ru.plane:
+            return Avatar.PLANE;
+        default:
+            return Avatar.PLANE;
+    }
+}
+
+export function getRussianAvatar(avatar: Avatar): string {
+    switch (avatar) {
+        case Avatar.CRONE:
+            return ru.crone;
+        case Avatar.CAT:
+            return ru.cat;
+        case Avatar.PLANE:
+            return ru.plane;
+        default:
+            return ru.plane;
+    }
+}
+
 function getRussianAgePostfix(age: number) {
     age = age % 100;
     if (age > 10 && age < 15) return "лет";
