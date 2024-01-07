@@ -23,7 +23,9 @@ export async function states(bot: MyTelegraf) {
             first_name: user.first_name,
             last_name: user.last_name,
         };
-        let message = (ctx.message as { text: string }).text;
+        let message = ctx.message
+            ? (ctx.message as { text?: string }).text
+            : undefined;
         if (message == ru.main_menu) {
             User.update({ tg_id, state: UserState.IDLE });
             return start(ctx, from);
