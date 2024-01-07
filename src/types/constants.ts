@@ -35,6 +35,8 @@ export enum UserState {
     ADDING_QUESTION = 7,
     SENDING_MEMO = 11,
     CAPITAL_START = 22,
+    CAPITAL_LOWER_LIMIT = 21,
+    CAPITAL_UPPER_LIMIT = 31,
     CHANGE_FIRST_NAME = -1,
     CHANGE_LAST_NAME = -2,
     CHANGE_AGE = -3,
