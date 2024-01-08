@@ -276,49 +276,6 @@ export async function states(bot: MyTelegraf) {
             });
             await ctx.reply(ru.successful_edit);
             start(ctx, from);
-        } else if (state == UserState.SENDING_MEMO) {
-            const { error, value } = Joi.string().required().validate(message);
-            if (error) return ctx.reply(ru.get_answer);
-            await QuestionService.answer(tg_id, user.last_jump_cost, value);
-            await User.update({
-                tg_id,
-                state: UserState.IDLE,
-                last_jump_cost: 0,
-            });
-            user = await User.get(tg_id);
-            if (user.last_map_id == 0) {
-                await User.update({ tg_id, start_energy: user.energy });
-                await ctx.replyWithPhoto(config.end_game_photo);
-                setTimeout(() => {
-                    ctx.reply(
-                        replaceTemplateVars(ru.end_level, {
-                            first_name: user.first_name,
-                            start_energy: user.start_energy,
-                            energy: user.energy,
-                        })
-                    );
-                    setTimeout(() => {
-                        start(ctx, from);
-                    }, 3000);
-                }, 2000);
-            } else
-                ctx.reply(
-                    ru.added_energy +
-                        "\n\n\n" +
-                        ru.current_status +
-                        "\n" +
-                        ru.energy +
-                        " " +
-                        user.energy +
-                        "\n" +
-                        ru.balance +
-                        " " +
-                        user.balance
-                ).then(() => {
-                    setTimeout(() => {
-                        start(ctx, from);
-                    }, 2000);
-                });
         } else if (
             state >= UserState.CAPITAL_LOWER_LIMIT &&
             state <= UserState.CAPITAL_UPPER_LIMIT
