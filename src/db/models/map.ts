@@ -1,7 +1,7 @@
 import pool from "../index";
 import config from "../../config";
 import { NotFoundError } from "./errors";
-import { Avatar, JumpType, MapCell, QuestType } from "../../types";
+import { Avatar, JumpType, LastJump, MapCell, QuestType } from "../../types";
 
 export async function add_image(
     map_id: number,
@@ -41,8 +41,8 @@ export async function get_cell_info(
         };
 }
 
-export async function get_last_jump(tg_id: number) {
-    const { rows } = await pool.query(
+export async function get_last_jump(tg_id: number): Promise<LastJump | null> {
+    const { rows } = await pool.query<LastJump>(
         `SELECT *, created_time < NOW() - INTERVAL '${
             config.time_out - 3
         } hours' AS can_jump FROM turns 

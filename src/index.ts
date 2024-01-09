@@ -9,6 +9,7 @@ import {
     controlMapInteractions,
     handleError,
     states,
+    handleNonExitableStates,
 } from "./controllers";
 
 const bot = new MyTelegraf(config.token, {
@@ -17,6 +18,7 @@ const bot = new MyTelegraf(config.token, {
 
 trackBot(bot);
 listenPayments(bot);
+handleNonExitableStates(bot);
 states(bot);
 listenMainEvents(bot);
 listenStart(bot);

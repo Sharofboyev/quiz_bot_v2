@@ -99,3 +99,13 @@ export type MapCell = {
     image: string;
     questType: QuestType;
 };
+
+export type LastJump = {
+    map_id: number;
+    jump: number;
+    quest_id: number;
+    created_time: Date;
+    status: boolean;
+    level: number;
+    can_jump: boolean;
+};

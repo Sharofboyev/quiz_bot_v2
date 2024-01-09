@@ -30,8 +30,9 @@ export class Map {
     }
 
     static async canJump(tg_id: number): Promise<CanJumpDto> {
-        let { map_id, level, jump_type, can_jump } = await get_last_jump(tg_id);
-        if (!can_jump) {
+        const lastJump = await get_last_jump(tg_id);
+
+        if (lastJump && !lastJump.can_jump) {
             return {
                 error: ru.jumps_limited,
                 can_jump: false,
@@ -46,15 +47,16 @@ export class Map {
         } else if (user.free_jump_time > new Date()) {
             jumpType = JumpType.FREE_JUMP_TIME;
         } else {
+            if (user.balance < 100) {
+                return {
+                    error: ru.no_free_jumps,
+                    can_jump: false,
+                };
+            }
+
             jumpType = JumpType.BALANCE;
         }
 
-        if (jumpType === JumpType.BALANCE && user.balance < 100) {
-            return {
-                error: ru.no_free_jumps,
-                can_jump: false,
-            };
-        }
         return {
             can_jump: true,
             jump_type: jumpType,
