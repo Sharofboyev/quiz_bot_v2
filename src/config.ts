@@ -11,7 +11,7 @@ export default {
         user: process.env.DB_USER || "postgres",
     },
     test_pay: process.env.TEST_PAY,
-    live_pay: process.env.LIVE_PAY,
+    live_pay: process.env.LIVE_PAY || "",
     pic_dice:
         process.env.PIC_DICE ||
         "https://www.boardgamesmaker.com/AttachFiles/WebsiteImages/Product_ItemBig/FI_8321.jpg",

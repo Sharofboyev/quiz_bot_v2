@@ -1,15 +1,13 @@
-import { InlineKeyboardButton } from "telegraf/typings/core/types/typegram";
-import config from "../config";
 import { MyTelegraf } from "../modules/telegraf";
 import { Map, QuestionService, User } from "../services";
-import { Avatar, Jump, JumpType, QuestType } from "../types";
+import { Avatar, JumpType } from "../types";
 import {
     prepareAnswerKeyboard,
     prepareJumpText,
     ru,
     upperFirstLetter,
 } from "../utils";
-import { NotFoundError, QuestionNotFoundError } from "../db/models/errors";
+import { QuestionNotFoundError } from "../db/models/errors";
 
 export function controlMapInteractions(bot: MyTelegraf) {
     bot.hears(ru.map, async (ctx) => {

@@ -8,10 +8,10 @@ import {
     UserState,
     UserStatus,
 } from "../types";
-import { convertToAvatar, replaceTemplateVars, ru } from "../utils";
+import { convertToAvatar, ru } from "../utils";
 import { start } from "./start";
 import Joi from "joi";
-import config from "../config";
+import moment from "moment";
 
 export async function states(bot: MyTelegraf) {
     bot.use(async (ctx, next) => {
@@ -263,15 +263,13 @@ export async function states(bot: MyTelegraf) {
             await ctx.reply(ru.successful_edit);
             start(ctx, from);
         } else if (state == UserState.CHANGE_NOTIFICATION_TIME) {
-            const { error, value } = Joi.string()
-                .regex(/\d{1,2}:\d{2}/)
-                .validate(message);
-            if (error) {
+            const time = moment(message, "HH:mm");
+            if (!time.isValid()) {
                 return ctx.reply(ru.wrong_value);
             }
             await User.update({
                 tg_id,
-                notification_time: value,
+                notification_time: time.format("HH:mm"),
                 state: UserState.IDLE,
             });
             await ctx.reply(ru.successful_edit);

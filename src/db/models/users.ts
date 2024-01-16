@@ -1,6 +1,6 @@
 import pool from "../index";
 import { getQuestName } from "../../utils";
-import { NotFoundError } from "./errors";
+import { NotFoundError, UserNotFoundError } from "./errors";
 import {
     UserDto,
     UpdateUserDto,
@@ -22,7 +22,7 @@ export async function get_user(tg_id: number) {
     SELECT 
         users.*,
         questions.text AS question,
-        questions.type AS quest_type,
+        questions.type AS cell_type,
         TO_CHAR(users.notification_time + INTERVAL '3 hours', 'HH24:MI:SS') AS notify
       FROM 
         users 
@@ -38,7 +38,7 @@ export async function get_user(tg_id: number) {
         [tg_id]
     );
 
-    if (rowCount === 0) throw new NotFoundError("User not found");
+    if (rowCount === 0) throw new UserNotFoundError();
     else {
         const user = rows[0];
         user.cell_type = getQuestName(Number(user.cell_type));

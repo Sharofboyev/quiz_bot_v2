@@ -76,11 +76,11 @@ export async function get_new_question(
 }
 
 export async function assign_question(assign_question_dto: AssignQuestionDto) {
-    const { level, map_id, question_id, tg_id } = assign_question_dto;
+    const { level, map_id, question_id, tg_id, jump } = assign_question_dto;
     await pool.query(
-        `INSERT INTO turns (tg_id, map_id, jump, quest_id, status, level) VALUES 
-      ($1, $2, 0, $3, true, $4)`,
-        [tg_id, map_id, question_id, level]
+        `INSERT INTO turns (tg_id, map_id, jump, quest_id, level, status) VALUES 
+      ($1, $2, $3, $4, $5, TRUE)`,
+        [tg_id, map_id, jump, question_id, level]
     );
 }
 

@@ -1,4 +1,4 @@
-import { NotFoundError } from "../db/models/errors";
+import { NotFoundError, UserNotFoundError } from "../db/models/errors";
 import { MyTelegraf } from "../modules/telegraf";
 import { User } from "../services";
 import { ru } from "../utils";
@@ -10,9 +10,9 @@ export function handleError(bot: MyTelegraf) {
     });
 
     bot.catch(async (err, ctx) => {
-        console.log("Here is the error");
+        console.log("Bot.catch");
         console.log(err);
-        if (err instanceof NotFoundError) {
+        if (err instanceof UserNotFoundError) {
             const from =
                 ctx.from ||
                 ctx.callbackQuery?.from ||

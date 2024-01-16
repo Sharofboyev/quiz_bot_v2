@@ -36,7 +36,7 @@ export function listenMainEvents(bot: MyTelegraf) {
             case "exercise":
                 cost -= 2;
             case "question":
-                cost -= 5;
+                cost -= 1;
                 const questionType: QuestType = -cost;
                 let question = await QuestionService.get_new_question({
                     tg_id,
@@ -54,7 +54,7 @@ export function listenMainEvents(bot: MyTelegraf) {
                         },
                     ],
                 ];
-                await User.update({ tg_id, last_jump_cost: cost });
+                await User.update({ tg_id, last_jump_cost: -questionType });
                 ctx.reply(prepareTextForChosenQuestion(question), {
                     reply_markup: { inline_keyboard },
                 });
@@ -166,5 +166,21 @@ export function listenMainEvents(bot: MyTelegraf) {
 
     bot.hears(ru.main_menu, (ctx) => {
         return start(ctx, ctx.from);
+    });
+
+    bot.hears(ru.payment, async (ctx) => {
+        ctx.replyWithInvoice({
+            currency: "RUB",
+            description: ru.payment_description,
+            payload: "payment_for_game",
+            title: ru.payment_title,
+            provider_token: config.live_pay,
+            prices: [{ amount: 10000, label: ru.payment_minimum }],
+            max_tip_amount: 1000000,
+            suggested_tip_amounts: [50000, 90000, 290000],
+            photo_height: 800,
+            photo_width: 800,
+            photo_url: config.pic_dice,
+        });
     });
 }

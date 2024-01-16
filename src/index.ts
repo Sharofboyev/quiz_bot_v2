@@ -10,6 +10,7 @@ import {
     handleError,
     states,
     handleNonExitableStates,
+    notify,
 } from "./controllers";
 
 const bot = new MyTelegraf(config.token, {
@@ -24,6 +25,7 @@ listenMainEvents(bot);
 listenStart(bot);
 listenUserEvents(bot);
 controlMapInteractions(bot);
+notify(bot);
 handleError(bot);
 
 bot.launch();

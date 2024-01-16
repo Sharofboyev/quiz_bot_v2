@@ -49,17 +49,9 @@ export function handleNonExitableStates(bot: MyTelegraf) {
                     }, 2000);
                 } else
                     ctx.reply(
-                        ru.added_energy +
-                            "\n\n\n" +
-                            ru.current_status +
-                            "\n" +
-                            ru.energy +
-                            " " +
-                            user.energy +
-                            "\n" +
-                            ru.balance +
-                            " " +
-                            user.balance
+                        `${ru.added_energy}\n\n\n${ru.current_status}` +
+                            `\n${ru.energy} ${user.energy}` +
+                            `\n${ru.balance} ${user.balance}`
                     ).then(() => {
                         setTimeout(() => {
                             start(ctx, from);

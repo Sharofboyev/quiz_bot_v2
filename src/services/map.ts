@@ -72,35 +72,37 @@ export class Map {
      *
      * Логика последнего ячейки:
      * Если пользователь в последнем ячейки попал, то храняется last_map_id как 40, не трогая level
-     * Вся логика завершении игры происходит в state хендлере
+     * Вся логика завершении игры происходит в следующем прыжке
      */
     static async jump(data: JumpDto): Promise<Jump> {
         const { user, jump, jump_type } = data;
-        const { tg_id, last_map_id } = user;
-        let map_id: number = last_map_id,
-            level: number = user.level;
-        if (last_map_id === 40) {
+        const { tg_id, avatar } = user;
+        let { last_map_id: map_id, level } = user;
+
+        if (map_id === 40) {
             map_id = 0;
             level++;
         }
-        if (user.last_map_id + jump > 40) {
+
+        if (map_id + jump > 40) {
             map_id = 40;
-        } else map_id = user.last_map_id + jump;
+        } else map_id = map_id + jump;
 
         // Берём инфомацию о ячейке (картинка, тип вопроса)
-        const cell = await get_cell_info(map_id, user.avatar, level);
+        const cell = await get_cell_info(map_id, avatar, level);
         const question = await QuestionService.get_new_question({
             tg_id,
             type: cell.questType,
         });
 
         // Делаем прыжок здесь, потому что в get_new_question может происходить ошибка (вопросы не остались такого типа)
-        await move(jump, map_id, level, user.tg_id, jump_type);
+        await move(jump, map_id, level, tg_id, jump_type);
         await QuestionService.assign({
             level,
             map_id,
             question_id: question.id,
             tg_id,
+            jump,
         });
         return {
             jump_type,

@@ -65,6 +65,7 @@ export type AssignQuestionDto = {
     level: number;
     question_id: number;
     map_id: number;
+    jump: number;
 };
 
 export type Question = {
