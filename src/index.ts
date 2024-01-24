@@ -21,10 +21,10 @@ const bot = new MyTelegraf(config.token, {
 trackBot(bot);
 listenPayments(bot);
 handleNonExitableStates(bot);
+listenStart(bot);
 states(bot);
 listenAdminEvents(bot);
 listenMainEvents(bot);
-listenStart(bot);
 listenUserEvents(bot);
 controlMapInteractions(bot);
 notify(bot);

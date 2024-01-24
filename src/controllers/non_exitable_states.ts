@@ -32,16 +32,15 @@ export function handleNonExitableStates(bot: MyTelegraf) {
                     await User.update({ tg_id, start_energy: user.energy });
                     await ctx.replyWithPhoto(config.end_game_photo);
                     setTimeout(() => {
-                        ctx.reply(
+                        return start(
+                            ctx,
+                            from,
                             replaceTemplateVars(ru.end_level, {
                                 first_name: user.first_name,
                                 start_energy: user.start_energy,
                                 energy: user.energy,
                             })
                         );
-                        setTimeout(() => {
-                            start(ctx, from);
-                        }, 3000);
                     }, 2000);
                 } else
                     ctx.reply(

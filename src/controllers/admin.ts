@@ -88,7 +88,8 @@ export function listenAdminEvents(bot: MyTelegraf) {
         return ctx.reply(
             replaceTemplateVars(ru.coupon_generated, {
                 code: coupon.code,
-            })
+            }),
+            { parse_mode: "Markdown" }
         );
     });
 }

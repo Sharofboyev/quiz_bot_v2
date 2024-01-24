@@ -16,7 +16,10 @@ export class CouponService {
             }
             counter++;
             try {
-                const code = generate({ length: 16, readable: true });
+                const code = generate({
+                    length: 16,
+                    readable: true,
+                }).toUpperCase();
                 return generateCoupon(couponType, code);
             } catch (err) {
                 if (err instanceof DatabaseError) {

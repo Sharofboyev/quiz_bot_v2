@@ -10,7 +10,7 @@ import {
     UserState,
     UserStatus,
 } from "../types";
-import { convertToAvatar, ru } from "../utils";
+import { convertToAvatar, replaceTemplateVars, ru } from "../utils";
 import { start } from "./start";
 import Joi from "joi";
 import moment from "moment";
@@ -181,12 +181,11 @@ export async function states(bot: MyTelegraf) {
                 value,
                 user.state - UserState.ADDING_BLITZ
             );
-            ctx.reply(ru.success_addition);
             await User.update({
                 tg_id: user.tg_id,
                 state: UserState.IDLE,
             });
-            start(ctx, from);
+            start(ctx, from, ru.success_addition);
         } else if (state == UserState.CHANGE_FIRST_NAME) {
             const { error, value } = Joi.string().required().validate(message);
             if (error) {
@@ -197,8 +196,7 @@ export async function states(bot: MyTelegraf) {
                 first_name: value,
                 state: UserState.IDLE,
             });
-            await ctx.reply(ru.successful_edit);
-            return start(ctx, from);
+            return start(ctx, from, ru.successful_edit);
         } else if (state == UserState.CHANGE_LAST_NAME) {
             const { error, value } = Joi.string().required().validate(message);
             if (error) {
@@ -209,8 +207,7 @@ export async function states(bot: MyTelegraf) {
                 last_name: value,
                 state: UserState.IDLE,
             });
-            await ctx.reply(ru.successful_edit);
-            return start(ctx, from);
+            return start(ctx, from, ru.successful_edit);
         } else if (state == UserState.CHANGE_AGE) {
             const { error, value } = Joi.number()
                 .integer()
@@ -222,8 +219,7 @@ export async function states(bot: MyTelegraf) {
                 return ctx.reply(ru.wrong_value);
             }
             await User.update({ tg_id, age: value, state: UserState.IDLE });
-            await ctx.reply(ru.successful_edit);
-            start(ctx, from);
+            start(ctx, from, ru.successful_edit);
         } else if (state == UserState.CHANGE_MARTIAL_STATUS) {
             const { error, value } = Joi.string<MartialStatus>()
                 .required()
@@ -235,8 +231,7 @@ export async function states(bot: MyTelegraf) {
                 state: UserState.IDLE,
                 martial_status: value,
             });
-            await ctx.reply(ru.successful_edit);
-            start(ctx, from);
+            start(ctx, from, ru.successful_edit);
         } else if (state == UserState.CHANGE_GAME_REQUEST) {
             const { error, value } = Joi.string().required().validate(message);
             if (error) {
@@ -247,8 +242,7 @@ export async function states(bot: MyTelegraf) {
                 game_request: value,
                 state: UserState.IDLE,
             });
-            await ctx.reply(ru.successful_edit);
-            start(ctx, from);
+            start(ctx, from, ru.successful_edit);
         } else if (state == UserState.CHANGE_AVATAR) {
             const { error, value } = Joi.string().required().validate(message);
             if (
@@ -263,8 +257,7 @@ export async function states(bot: MyTelegraf) {
                 avatar: convertToAvatar(value),
                 state: UserState.IDLE,
             });
-            await ctx.reply(ru.successful_edit);
-            start(ctx, from);
+            start(ctx, from, ru.successful_edit);
         } else if (state == UserState.CHANGE_NOTIFICATION_TIME) {
             const time = moment(message, "HH:mm");
             if (!time.isValid()) {
@@ -275,8 +268,7 @@ export async function states(bot: MyTelegraf) {
                 notification_time: time.format("HH:mm"),
                 state: UserState.IDLE,
             });
-            await ctx.reply(ru.successful_edit);
-            start(ctx, from);
+            start(ctx, from, ru.successful_edit);
         } else if (
             state >= UserState.CAPITAL_LOWER_LIMIT &&
             state <= UserState.CAPITAL_UPPER_LIMIT
@@ -301,10 +293,11 @@ export async function states(bot: MyTelegraf) {
             });
             if (state == UserState.CAPITAL_UPPER_LIMIT) {
                 await User.update({ tg_id, state: UserState.IDLE });
-                await ctx.reply(
-                    ru.end_capital1 + user.energy + ru.end_capital2
+                return start(
+                    ctx,
+                    from,
+                    replaceTemplateVars(ru.end_capital, { energy: user.energy })
                 );
-                return start(ctx, from);
             }
             let question = await QuestionService.get_new_question({
                 tg_id,
@@ -331,8 +324,17 @@ export async function states(bot: MyTelegraf) {
 
             try {
                 const coupon = await CouponService.getCoupon(value);
-                if (coupon.type == CouponType.FREE_LEVEL && user.free_level)
-                    return ctx.reply(ru.coupon_allowed_only_once);
+                if (
+                    (coupon.type == CouponType.FREE_LEVEL && user.free_level) ||
+                    coupon.used
+                ) {
+                    await User.update({
+                        tg_id,
+                        state: UserState.IDLE,
+                    });
+                    return start(ctx, from, ru.coupon_allowed_only_once);
+                }
+
                 await CouponService.activateCoupon(value, tg_id);
                 if (coupon.type === CouponType.FREE_JUMP) {
                     await User.update({
@@ -346,7 +348,7 @@ export async function states(bot: MyTelegraf) {
                         state: UserState.IDLE,
                         free_level: 1,
                     });
-                return ctx.reply(ru.coupon_activated);
+                return start(ctx, from, ru.coupon_activated);
             } catch (err) {
                 if (err instanceof CouponNotFoundError) {
                     return ctx.reply(ru.coupon_not_found);

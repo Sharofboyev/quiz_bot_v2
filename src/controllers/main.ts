@@ -25,9 +25,7 @@ export function listenMainEvents(bot: MyTelegraf) {
                 tg_id,
                 last_jump_cost: 0,
             });
-            return ctx.reply(ru.late).then(() => {
-                start(ctx, ctx.callbackQuery.from);
-            });
+            return start(ctx, ctx.callbackQuery.from, ru.late);
         }
         if (!("data" in ctx.callbackQuery)) return; // Just type narrowing here
         let data = ctx.callbackQuery.data.substring(4);
@@ -66,10 +64,11 @@ export function listenMainEvents(bot: MyTelegraf) {
                     await User.update({ tg_id, start_energy: user.energy });
                     await ctx.replyWithPhoto(config.end_game_photo);
                     setTimeout(async () => {
-                        await ctx.reply(prepareTextForTakingRest(user));
-                        setTimeout(async () => {
-                            await start(ctx, ctx.callbackQuery.from);
-                        }, 3000);
+                        await start(
+                            ctx,
+                            ctx.callbackQuery.from,
+                            prepareTextForTakingRest(user)
+                        );
                     }, 2000);
                 } else await ctx.reply(ru.having_rest);
         }
@@ -159,7 +158,7 @@ export function listenMainEvents(bot: MyTelegraf) {
             state: UserState.ACTIVATING_COUPON,
         });
         return ctx.reply(ru.send_coupon, {
-            reply_markup: { keyboard: mainMenuButton },
+            reply_markup: { keyboard: mainMenuButton, resize_keyboard: true },
         });
     });
 }
