@@ -6,6 +6,7 @@ import {
     CouponType,
     MartialStatus,
     QuestType,
+    UserDto,
     UserState,
     UserStatus,
 } from "../types";
@@ -18,7 +19,7 @@ import { CouponNotFoundError } from "../db/models/errors";
 export async function states(bot: MyTelegraf) {
     bot.use(async (ctx, next) => {
         let tg_id = ctx.from?.id as number;
-        let user = await User.get(tg_id);
+        let { user } = ctx.state as { user: UserDto };
         let state = user.state;
         const from = {
             id: tg_id,
@@ -38,7 +39,7 @@ export async function states(bot: MyTelegraf) {
                 ctx.reply(ru.get_name);
                 await User.update({ tg_id, state: UserState.ASKED_NAME });
             }, 5000);
-        } else if (state == 1) {
+        } else if (state == UserState.ASKED_NAME) {
             const { error, value } = Joi.string().required().validate(message);
             if (error || value == "/start") {
                 ctx.reply(ru.welcome);
@@ -174,12 +175,16 @@ export async function states(bot: MyTelegraf) {
                 });
             }, 1500);
         } else if (state == UserState.ADDING_QUESTION) {
-            const { error } = Joi.string().required().validate(message);
+            const { error, value } = Joi.string().required().validate(message);
             if (error) return ctx.reply(ru.send_question);
+            await QuestionService.add(
+                value,
+                user.state - UserState.ADDING_BLITZ
+            );
+            ctx.reply(ru.success_addition);
             await User.update({
                 tg_id: user.tg_id,
                 state: UserState.IDLE,
-                status: UserStatus.ADMIN,
             });
             start(ctx, from);
         } else if (state == UserState.CHANGE_FIRST_NAME) {
@@ -326,7 +331,7 @@ export async function states(bot: MyTelegraf) {
 
             try {
                 const coupon = await CouponService.getCoupon(value);
-                if (coupon.type == CouponType.FREE_JUMP && user.free_level)
+                if (coupon.type == CouponType.FREE_LEVEL && user.free_level)
                     return ctx.reply(ru.coupon_allowed_only_once);
                 await CouponService.activateCoupon(value, tg_id);
                 if (coupon.type === CouponType.FREE_JUMP) {

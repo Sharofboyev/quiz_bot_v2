@@ -1,5 +1,6 @@
 import { CustomContext, MyTelegraf } from "../modules/telegraf";
 import { User } from "../services";
+import { UserDto } from "../types";
 import { ru } from "../utils";
 
 export function listenStart(bot: MyTelegraf) {
@@ -13,7 +14,7 @@ export async function start(
     from: { id: number; first_name: string; last_name?: string }
 ) {
     const tg_id = from.id;
-    let user = await User.get(tg_id);
+    let { user } = ctx.state as { user: UserDto };
     if (!user) {
         await User.add({ ...from, tg_id });
         user = await User.get(tg_id);

@@ -2,7 +2,7 @@ import { KeyboardButton } from "telegraf/typings/core/types/typegram";
 import { MyTelegraf } from "../modules/telegraf";
 import { User } from "../services";
 import { prepareUserInfo, ru, sender_diary } from "../utils";
-import { UserState, changeUser } from "../types";
+import { UserDto, UserState, changeUser } from "../types";
 
 export function listenUserEvents(bot: MyTelegraf) {
     bot.action(/change#_#\w+/, async (ctx) => {
@@ -44,7 +44,7 @@ export function listenUserEvents(bot: MyTelegraf) {
     });
 
     bot.hears(ru.diary, async (ctx) => {
-        let user = await User.get(ctx.from.id);
+        let { user } = ctx.state as { user: UserDto };
         let pages = await User.get_diary(ctx.from.id);
 
         const message = prepareUserInfo(user);

@@ -1,6 +1,6 @@
 import { MyTelegraf } from "../modules/telegraf";
 import { User, QuestionService } from "../services";
-import { QuestType, AnswerType, mainMenuButton } from "../types";
+import { QuestType, AnswerType, mainMenuButton, UserDto } from "../types";
 import config from "../config";
 import { ru } from "../utils";
 import { start } from "./start";
@@ -60,7 +60,7 @@ export function listenMainEvents(bot: MyTelegraf) {
                 });
                 break;
             case "rest":
-                let user = await User.get(tg_id);
+                let user = ctx.state.user;
                 // Если пользователь прошел уровень, поздравляем его с этим
                 if (user.last_map_id == 40) {
                     await User.update({ tg_id, start_energy: user.energy });
@@ -80,7 +80,7 @@ export function listenMainEvents(bot: MyTelegraf) {
         if (!("data" in ctx.callbackQuery)) return; // Just type narrowing here
 
         const tg_id: TgId = ctx.callbackQuery.from.id;
-        let user = await User.get(tg_id);
+        let { user } = ctx.state as { user: UserDto };
 
         // Parsing callback data to get type of question and intention of user
         const regex = /set_(\d{1})(completed|incompleted|come_back)$/;
