@@ -21,11 +21,11 @@ export async function start(
     let keyboard = [
         [{ text: ru.dice }, { text: ru.map }],
         [{ text: ru.diary }, { text: ru.settings }],
-        [{ text: ru.rules }],
+        [{ text: ru.rules }, { text: ru.coupon }],
         [{ text: ru.payment }, { text: ru.credits }],
     ];
     if (User.is_admin(user)) {
-        keyboard[2] = [{ text: ru.add_question }];
+        keyboard[2] = [{ text: ru.add_question }, { text: ru.generate_coupon }];
     }
 
     ctx.reply(ru.start, {

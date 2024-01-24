@@ -46,6 +46,8 @@ export class Map {
             jumpType = JumpType.FREE_JUMPS;
         } else if (user.free_jump_time > new Date()) {
             jumpType = JumpType.FREE_JUMP_TIME;
+        } else if (user.free_level && user.level <= user.free_level) {
+            jumpType = JumpType.FREE_LEVEL;
         } else {
             if (user.balance < 100) {
                 return {

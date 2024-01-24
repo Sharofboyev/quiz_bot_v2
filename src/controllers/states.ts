@@ -1,8 +1,9 @@
 import { KeyboardButton } from "telegraf/typings/core/types/typegram";
 import { MyTelegraf } from "../modules/telegraf";
-import { Map, QuestionService, User } from "../services";
+import { CouponService, Map, QuestionService, User } from "../services";
 import {
     Avatar,
+    CouponType,
     MartialStatus,
     QuestType,
     UserState,
@@ -12,6 +13,7 @@ import { convertToAvatar, ru } from "../utils";
 import { start } from "./start";
 import Joi from "joi";
 import moment from "moment";
+import { CouponNotFoundError } from "../db/models/errors";
 
 export async function states(bot: MyTelegraf) {
     bot.use(async (ctx, next) => {
@@ -172,12 +174,8 @@ export async function states(bot: MyTelegraf) {
                 });
             }, 1500);
         } else if (state == UserState.ADDING_QUESTION) {
-            const { error, value } = Joi.string().required().validate(message);
+            const { error } = Joi.string().required().validate(message);
             if (error) return ctx.reply(ru.send_question);
-            if (value != ru.main_menu) {
-                await QuestionService.add(value, user.status - 3);
-                ctx.reply(ru.success_addition);
-            }
             await User.update({
                 tg_id: user.tg_id,
                 state: UserState.IDLE,
@@ -317,6 +315,38 @@ export async function states(bot: MyTelegraf) {
                     },
                 }
             );
+        } else if (state == UserState.ACTIVATING_COUPON) {
+            const { error, value } = Joi.string()
+                .length(16)
+                .required()
+                .validate(message);
+            if (error) {
+                return ctx.reply(ru.wrong_value);
+            }
+
+            try {
+                const coupon = await CouponService.getCoupon(value);
+                if (coupon.type == CouponType.FREE_JUMP && user.free_level)
+                    return ctx.reply(ru.coupon_allowed_only_once);
+                await CouponService.activateCoupon(value, tg_id);
+                if (coupon.type === CouponType.FREE_JUMP) {
+                    await User.update({
+                        tg_id,
+                        state: UserState.IDLE,
+                        free_jumps: user.free_jumps + 3,
+                    });
+                } else
+                    await User.update({
+                        tg_id,
+                        state: UserState.IDLE,
+                        free_level: 1,
+                    });
+                return ctx.reply(ru.coupon_activated);
+            } catch (err) {
+                if (err instanceof CouponNotFoundError) {
+                    return ctx.reply(ru.coupon_not_found);
+                } else throw err;
+            }
         } else return next();
     });
 }

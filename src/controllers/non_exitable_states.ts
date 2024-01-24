@@ -32,7 +32,8 @@ export function handleNonExitableStates(bot: MyTelegraf) {
                     last_jump_cost: 0,
                 });
                 user = await User.get(tg_id);
-                if (user.last_map_id == 0) {
+                // Если пользователь прошел уровень, поздравляем его с этим
+                if (user.last_map_id == 40) {
                     await User.update({ tg_id, start_energy: user.energy });
                     await ctx.replyWithPhoto(config.end_game_photo);
                     setTimeout(() => {

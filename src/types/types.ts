@@ -1,4 +1,10 @@
-import { Avatar, JumpType, QuestType, UserStatus } from "./constants";
+import {
+    Avatar,
+    CouponType,
+    JumpType,
+    QuestType,
+    UserStatus,
+} from "./constants";
 
 export type MartialStatus =
     | "Не замужем/не женат"
@@ -32,6 +38,7 @@ export type UserDto = {
     free_jump_time: Date;
     start_energy: number;
     notified: boolean;
+    free_level?: number;
 };
 
 export type UpdateUserDto = Partial<UserDto> & {
@@ -109,4 +116,14 @@ export type LastJump = {
     status: boolean;
     level: number;
     can_jump: boolean;
+};
+
+export type Coupon = {
+    id: number;
+    code: string;
+    type: CouponType;
+    created_time: Date;
+    tg_id?: number;
+    activated_time?: Date;
+    used: boolean;
 };

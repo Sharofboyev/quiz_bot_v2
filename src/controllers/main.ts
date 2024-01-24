@@ -1,6 +1,6 @@
 import { MyTelegraf } from "../modules/telegraf";
 import { User, QuestionService } from "../services";
-import { QuestType, AnswerType } from "../types";
+import { QuestType, AnswerType, mainMenuButton } from "../types";
 import config from "../config";
 import { ru } from "../utils";
 import { start } from "./start";
@@ -61,8 +61,9 @@ export function listenMainEvents(bot: MyTelegraf) {
                 break;
             case "rest":
                 let user = await User.get(tg_id);
-                if (user.last_map_id == 0 && user.level > 1) {
-                    User.update({ tg_id, start_energy: user.energy });
+                // Если пользователь прошел уровень, поздравляем его с этим
+                if (user.last_map_id == 40) {
+                    await User.update({ tg_id, start_energy: user.energy });
                     await ctx.replyWithPhoto(config.end_game_photo);
                     setTimeout(async () => {
                         await ctx.reply(prepareTextForTakingRest(user));
@@ -132,38 +133,6 @@ export function listenMainEvents(bot: MyTelegraf) {
         return await ctx.replyWithDocument(config.rulesFileId);
     });
 
-    bot.hears(ru.add_question, async (ctx, next) => {
-        let user = await User.get(ctx.from.id);
-        if (User.is_admin(user))
-            return await ctx.reply(ru.question_types, {
-                reply_markup: {
-                    inline_keyboard: [
-                        [
-                            {
-                                text: ru.question,
-                                callback_data: "question#_#1",
-                            },
-                            {
-                                text: ru.thankful,
-                                callback_data: "question#_#2",
-                            },
-                            {
-                                text: ru.exercise,
-                                callback_data: "question#_#3",
-                            },
-                        ],
-                        [
-                            {
-                                text: ru.capital_question,
-                                callback_data: "question#_#0",
-                            },
-                        ],
-                    ],
-                },
-            });
-        else return next();
-    });
-
     bot.hears(ru.main_menu, (ctx) => {
         return start(ctx, ctx.from);
     });
@@ -181,6 +150,16 @@ export function listenMainEvents(bot: MyTelegraf) {
             photo_height: 800,
             photo_width: 800,
             photo_url: config.pic_dice,
+        });
+    });
+
+    bot.hears(ru.coupon, async (ctx) => {
+        await User.update({
+            tg_id: ctx.from.id,
+            state: UserState.ACTIVATING_COUPON,
+        });
+        return ctx.reply(ru.send_coupon, {
+            reply_markup: { keyboard: mainMenuButton },
         });
     });
 }

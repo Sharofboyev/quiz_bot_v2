@@ -18,3 +18,10 @@ export class UserNotFoundError extends NotFoundError {
         this.name = "UserNotFound";
     }
 }
+
+export class CouponNotFoundError extends NotFoundError {
+    constructor(message?: string) {
+        super(message || "Coupon not found");
+        this.name = "CouponNotFound";
+    }
+}
