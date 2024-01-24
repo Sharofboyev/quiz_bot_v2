@@ -1,6 +1,6 @@
 import { ru } from "./lang";
 import { InlineKeyboardButton } from "telegraf/typings/core/types/typegram";
-import { Avatar, DiaryPage, UserDto } from "../types";
+import { Avatar, CouponType, DiaryPage, UserDto } from "../types";
 import moment from "moment";
 
 export function sender_diary(

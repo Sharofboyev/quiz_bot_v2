@@ -5,7 +5,7 @@ import {
     move,
 } from "../db/models/map";
 import { QuestionService } from "./questions";
-import { CanJumpDto, Jump, QuestType } from "../types";
+import { CanJumpDto, Jump, QuestType, UserDto } from "../types";
 import { ru } from "../utils";
 import { User } from "./user";
 import { Avatar, JumpType } from "../types";
@@ -29,7 +29,7 @@ export class Map {
         return get_last_jump(tg_id);
     }
 
-    static async canJump(tg_id: number): Promise<CanJumpDto> {
+    static async canJump(tg_id: number, user: UserDto): Promise<CanJumpDto> {
         const lastJump = await get_last_jump(tg_id);
 
         if (lastJump && !lastJump.can_jump) {
@@ -39,13 +39,13 @@ export class Map {
             };
         }
 
-        const user = await User.get(tg_id);
-
         let jumpType: JumpType;
         if (user.free_jumps > 0) {
             jumpType = JumpType.FREE_JUMPS;
         } else if (user.free_jump_time > new Date()) {
             jumpType = JumpType.FREE_JUMP_TIME;
+        } else if (user.free_level && user.level <= user.free_level) {
+            jumpType = JumpType.FREE_LEVEL;
         } else {
             if (user.balance < 100) {
                 return {

@@ -1,8 +1,10 @@
+import { KeyboardButton } from "telegraf/typings/core/types/typegram";
 import { ru } from "../utils";
 
 export enum JumpType {
     FREE_JUMP_TIME = "free_jump_time",
     FREE_JUMPS = "free_jumps",
+    FREE_LEVEL = "free_level",
     BALANCE = "balance",
 }
 
@@ -32,8 +34,12 @@ export enum UserState {
     ASKED_GAME_REQUEST = 4,
     ASKED_TO_CHOOSE_AVATAR = 5,
     IDLE = 6,
-    ADDING_QUESTION = 7,
+    ADDING_BLITZ = 7,
+    ADDING_QUESTION = 8,
+    ADDING_THANKFUL = 9,
+    ADDING_EXERCICE = 10,
     SENDING_MEMO = 11,
+    ACTIVATING_COUPON = 12,
     CAPITAL_START = 22,
     CAPITAL_LOWER_LIMIT = 21,
     CAPITAL_UPPER_LIMIT = 31,
@@ -82,3 +88,10 @@ export enum CellType {
     PAUSE = "Пауза",
     END = "Конец",
 }
+
+export enum CouponType {
+    FREE_JUMP = "free_jump",
+    FREE_LEVEL = "free_level",
+}
+
+export const mainMenuButton: KeyboardButton[][] = [[{ text: ru.main_menu }]];

@@ -6,6 +6,7 @@ import {
     Question,
     GetNewQuestionDto,
     AssignQuestionDto,
+    UserState,
 } from "../../types";
 
 /**
@@ -17,8 +18,8 @@ import {
 export async function answer(tg_id: number, type: AnswerType, memo?: string) {
     if (type == AnswerType.CANCEL_JUMP) {
         await pool.query(
-            "UPDATE users SET last_map_id = last_map_id - last_jump WHERE tg_id = $1",
-            [tg_id]
+            "UPDATE users SET last_map_id = last_map_id - last_jump, state = $1, last_jump_cost = 0 WHERE tg_id = $2",
+            [UserState.IDLE, tg_id]
         );
         await pool.query(
             "UPDATE turns SET status = FALSE WHERE id IN (SELECT id FROM turns WHERE tg_id = $1 AND status ORDER BY id DESC LIMIT 1)",
@@ -26,8 +27,8 @@ export async function answer(tg_id: number, type: AnswerType, memo?: string) {
         );
     } else if (type != AnswerType.NOT_ANSWER_PAUSE) {
         await pool.query(
-            "UPDATE users SET energy = energy + $1 WHERE tg_id = $2",
-            [type, tg_id]
+            "UPDATE users SET energy = energy + $1, state = $2, last_jump_cost = 0 WHERE tg_id = $3",
+            [type, UserState.IDLE, tg_id]
         );
         await pool.query(
             "UPDATE turns SET memo = $1 WHERE id IN (SELECT id FROM turns WHERE tg_id = $2 AND status ORDER BY id DESC LIMIT 1)",

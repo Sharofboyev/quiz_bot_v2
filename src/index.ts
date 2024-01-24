@@ -1,7 +1,7 @@
 import { MyTelegraf, CustomContext } from "./modules/telegraf";
 import config from "./config";
 import {
-    listenMainEvents,
+    listenAdminEvents,
     listenPayments,
     listenStart,
     trackBot,
@@ -11,6 +11,7 @@ import {
     states,
     handleNonExitableStates,
     notify,
+    listenMainEvents,
 } from "./controllers";
 
 const bot = new MyTelegraf(config.token, {
@@ -20,9 +21,10 @@ const bot = new MyTelegraf(config.token, {
 trackBot(bot);
 listenPayments(bot);
 handleNonExitableStates(bot);
-states(bot);
-listenMainEvents(bot);
 listenStart(bot);
+states(bot);
+listenAdminEvents(bot);
+listenMainEvents(bot);
 listenUserEvents(bot);
 controlMapInteractions(bot);
 notify(bot);

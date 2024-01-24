@@ -1,6 +1,6 @@
 import { MyTelegraf } from "../modules/telegraf";
 import { Map, QuestionService, User } from "../services";
-import { Avatar, JumpType } from "../types";
+import { Avatar, CellType, JumpType, UserDto } from "../types";
 import {
     prepareAnswerKeyboard,
     prepareJumpText,
@@ -11,7 +11,9 @@ import { QuestionNotFoundError } from "../db/models/errors";
 
 export function controlMapInteractions(bot: MyTelegraf) {
     bot.hears(ru.map, async (ctx) => {
-        const user = await User.get(ctx.from.id);
+        const { user } = ctx.state as {
+            user: UserDto & { cell_type: CellType };
+        };
         let { tg_id, cell_type, avatar, steps, last_map_id, level } = user;
         let message = "";
         if (!avatar || steps == 0) {
@@ -41,9 +43,12 @@ export function controlMapInteractions(bot: MyTelegraf) {
     });
 
     bot.hears(ru.dice, async (ctx) => {
-        let user = await User.get(ctx.from.id);
+        let { user } = ctx.state;
 
-        const { can_jump, error, jump_type } = await Map.canJump(user.tg_id);
+        const { can_jump, error, jump_type } = await Map.canJump(
+            user.tg_id,
+            user
+        );
         if (!can_jump) {
             return ctx.reply(error as string);
         }

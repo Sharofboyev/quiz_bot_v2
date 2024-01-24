@@ -87,6 +87,17 @@ export async function move(
           WHERE tg_id = $4`,
             [jump, map_id, level, tg_id]
         );
+    } else if (jump_type === JumpType.FREE_LEVEL) {
+        await pool.query(
+            `UPDATE users 
+          SET 
+              steps = steps + 1, 
+              last_jump = $1, 
+              last_map_id = $2,
+              level = COALESCE($3, level)
+          WHERE tg_id = $4`,
+            [jump, map_id, level, tg_id]
+        );
     } else if (jump_type === JumpType.BALANCE) {
         await pool.query(
             `UPDATE users 

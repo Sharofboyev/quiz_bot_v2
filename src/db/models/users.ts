@@ -73,8 +73,9 @@ export async function update_user(user: UpdateUserDto) {
             notification_time = COALESCE($14::time - INTERVAL '3 hours', notification_time),
             free_jumps = COALESCE($15, free_jumps), 
             free_jump_time = COALESCE ($16, free_jump_time),
-            start_energy = COALESCE ($17, start_energy) 
-        WHERE tg_id = $18`,
+            start_energy = COALESCE ($17, start_energy),
+            free_level = COALESCE ($18, free_level)
+        WHERE tg_id = $19`,
         [
             user.first_name,
             user.last_name,
@@ -93,6 +94,7 @@ export async function update_user(user: UpdateUserDto) {
             user.free_jumps,
             user.free_jump_time,
             user.start_energy,
+            user.free_level,
             user.tg_id,
         ]
     );

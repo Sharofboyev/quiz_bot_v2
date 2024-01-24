@@ -2,10 +2,11 @@ import { MyTelegraf } from "../modules/telegraf";
 import { User, Track } from "../services";
 import config from "../config";
 import moment from "moment";
+import { UserDto } from "../types";
 
 export function listenPayments(bot: MyTelegraf) {
     bot.on("successful_payment", async (ctx) => {
-        let user = await User.get(ctx.from.id);
+        let { user } = ctx.state as { user: UserDto };
         let amount = ctx.message.successful_payment.total_amount / 100;
         if (amount >= config.free_pay1) {
             User.update({
