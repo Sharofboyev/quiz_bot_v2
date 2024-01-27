@@ -148,4 +148,5 @@ export const ru = {
     coupon_free_jump: "3 бесплатного хода", // 3 free jumps
     coupon_free_level: "Бесплатный уровень", // free level
     coupon_generated: "Купон создан. Код: `${code}`",
+    wrong_notification_time: "Пожалуйста, введите время в формате ЧЧ:ММ",
 };
