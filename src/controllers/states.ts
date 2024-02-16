@@ -261,7 +261,7 @@ export async function states(bot: MyTelegraf) {
         } else if (state == UserState.CHANGE_NOTIFICATION_TIME) {
             const time = moment(message, "HH:mm");
             if (!time.isValid()) {
-                return ctx.reply(ru.wrong_value);
+                return ctx.reply(ru.wrong_notification_time);
             }
             await User.update({
                 tg_id,

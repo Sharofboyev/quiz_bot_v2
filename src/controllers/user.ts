@@ -12,7 +12,8 @@ export function listenUserEvents(bot: MyTelegraf) {
         const tg_id = ctx.callbackQuery.from.id;
         let data = ctx.callbackQuery.data.replace("change#_#", "");
         let keyboard: KeyboardButton[][] | null = null;
-        if (data in changeUser) {
+        if (changeUser.includes(data)) {
+            console.log(UserState[`CHANGE_` + data.toUpperCase()]);
             await User.update({
                 tg_id,
                 state: UserState[`CHANGE_` + data.toUpperCase()],
