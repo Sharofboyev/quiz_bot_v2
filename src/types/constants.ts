@@ -95,3 +95,8 @@ export enum CouponType {
 }
 
 export const mainMenuButton: KeyboardButton[][] = [[{ text: ru.main_menu }]];
+
+export enum Language {
+    RU = "ru",
+    EN = "en",
+}

@@ -1,4 +1,6 @@
-export const ru = {
+import { LanguageModel } from "../types";
+
+export const ru: LanguageModel = {
     welcome:
         "🖖 Приветствую вас, Игрок! 🖖\nВы начинаете увлекательный путь к самому себе. На этом пути вас ждут открытия и озарения, сопротивление и настойчивость. И наградой станет - более глубокое понимание себя, более осознанный подход к своей жизни.\nТо, что вы оказались сегодня здесь, - не случайно. Вы наверняка искали ответы на свои вопросы и, мы надеемся, что вы сможете найти их в этом Квесте. 🙏 \nКвест Жизни - увлекательная Игра, которая поможет задавать себе вопросы и находить на них ответы в реальности.\nВо время Игры вы будете перемещаться по красочному игровому полю, отвечать на вопросы, выполнять задания и, постепенно, менять свою жизнь к лучшему. 🌟\n📋 Подробнее о правилах Игры можно почитать в разделе «Правила Игры».\n🖋 Подробнее об авторах можно узнать в разделе «Авторы».\nНачнём?🤝",
     get_name: "Пожалуйста, представьтесь. Например: Иван Иванов",
@@ -150,3 +152,150 @@ export const ru = {
     coupon_generated: "Купон создан. Код: `${code}`",
     wrong_notification_time: "Пожалуйста, введите время в формате ЧЧ:ММ",
 };
+
+export const en: LanguageModel = {
+    welcome:
+        "🖖 Welcome, Player! 🖖\nYou are starting an exciting journey to yourself. On this path, you will find discoveries and enlightenment, resistance and perseverance. And the reward will be - a deeper understanding of yourself, a more conscious approach to your life.\nWhat you are here today is not accidental. You were probably looking for answers to your questions and we hope that you can find them in this Quest. 🙏\nLife Quest is an exciting Game that will help you ask yourself questions and find answers to them in reality.\nDuring the Game, you will move around the colorful playing field, answer questions, perform tasks and gradually change your life for the better. 🌟\n📋 You can read more about the rules of the Game in the “Game Rules” section.\n🖋 You can learn more about the authors in the “Authors” section.\nShall we start?🤝",
+    get_name: "Please introduce yourself. For example: Ivan Ivanov",
+    get_age: "Let's get to know each other better? How old are you?",
+    get_martial_status: "Tell me, do you have a family?",
+    martial_statuses: ["Single", "Married", "Divorced", "I don't want to say"],
+    request_to_game:
+        "What do you want to get from the Game? Write down your thoughts and feelings in a free form. This will be your first entry in the Player's Diary",
+    yes: "Yes",
+    no: "No",
+    start: "Choose the desired option",
+    dice: "🎲 Dice roll",
+    map: "🌀 Game map",
+    settings: "Settings",
+    change_lang: "Change language",
+    main_menu: "Main menu",
+    back: "Back",
+    choose_avatar:
+        "Which of the presented avatars will be your chip on the Game field?",
+    plane: "✈️ Plane",
+    crone: "👑 Crone",
+    cat: "🐈‍⬛ Cat",
+    first_name: "First name",
+    last_name: "Last name",
+    balance: "🔋 Balance",
+    energy: "⚡️ Energy",
+    avatar: "🔅 Avatar",
+    martial_status: "Martial status",
+    game_request: "📜 Game request",
+    level: "Level",
+    steps: "🗓 Moves at the selected level",
+    diary: "📖 My Player's Diary",
+    none: "Unknown",
+    edit: "Edit",
+    age: "Age",
+    year: "years",
+    on_error: "An error occurred. Please contact support",
+    notification_time: "⏰ Notification time",
+    ask_edit: "Send a new value for ",
+    wrong_value: "Please check the correctness of the entered data",
+    successful_edit: "Changes saved",
+    jumps_limited: "The next move can only be made in 12 hours",
+    question: "Question",
+    exercise: "Exercise",
+    thankful: "Thankfulness",
+    pause: "Pause",
+    cell_type: "Cell type",
+    dice_value: "The die showed the value: ",
+    completed: "Done",
+    incompleted: "I will pay for non-compliance",
+    come_back: "I don't want to do it, I'll be back",
+    get_rest: "Rest",
+    get_question: "Get a question",
+    get_exercise: "Get an exercise",
+    note1: "Answer the question honestly. You have 12 hours to think, but you can also answer immediately. If your answer is not recorded in the Player's Diary, you will lose 1 Energy",
+    note2: "Feel the idea of gratitude. Be sure to say thank you out loud. Gratitude brings 2 Energy and improves well-being! Be honest with yourself and immediately record your observations about yourself in the Player's Diary.",
+    note3: "Tasks are designed to be completed within 3 days. The task is considered completed when you leave a record/report of the completed task in the Player's Diary. If the task execution period has passed and the report has not appeared, the Player loses 3 Energy.",
+    note4: "The Pause cell allows you to move around the field without additional costs (Energy). However, if desired, you can multiply your Energy by choosing a question or task to complete.",
+    note5: "",
+    you_have_chosen: "You have chosen",
+    added_energy: "Congratulations! You have been added Energy. Keep it up!",
+    removed_energy:
+        "Your Energy has decreased, but you will remain in the current cell",
+    came_back: "You have returned to the previous cell",
+    get_answer:
+        "Write down your thoughts and feelings in detail in your Player's Diary",
+    late: "You just missed it, so you won't be able to take either a question or a task. Enjoy your rest!",
+    having_rest: "Now you can rest. Enjoy your well-deserved rest!",
+    no_such_keyboard:
+        "Please follow the rules of the bot. If you lack something, write to the authors",
+    current_map_id: "Current cell number",
+    rules: "📋 Game Rules",
+    credits: "🖋 Game Authors",
+    payment: "💳 Game Payment",
+    founders:
+        "Game Authors\n\nI treat the Game “Life Quest” very carefully. This is the result of many years of experience, training, and inspiration. Hello, I am Anya, and I created the Game that I myself love to play with great pleasure.\n\nI was born in Kazakhstan, studied in St. Petersburg, worked in Moscow, traveled a lot, and now live in Portugal.\n\nMy Game is a self-development tool for those who are ready to devote time to themselves, grow, compare themselves today with themselves yesterday. Sometimes I joke that this is a game for introverts:)\n\nThe design of the Game is done by the wonderful artist Ksenia Zaloznykh. She managed to capture the essence of each level and present it in stunning images.\n\nThe technical development is done by Sarvar Sharofboev.\n\nOur team is very small at the moment, but we hope that with your help, we will be able to maintain the high quality of the Game and develop to present new levels to you.\n\nOur contacts:\nGeneral questions and content - ",
+    map_id: "cell",
+    time: "Time",
+    answer: "Answer",
+    no_more: "No further movement is provided.",
+    undefined: "Undefined",
+    not_answered: "I want to think about it more carefully",
+    not_found: "Not found",
+    add_question: "Add a question",
+    game_rule: "",
+    pay: "Payment",
+    question_types: "What do you want to add?",
+    send_question: "Send the question text",
+    success_addition: "The question has been added successfully",
+    capital_question: "Blitz question",
+    game_capital:
+        "Dear Player, you have customized the Game to your request and have set yourself up for the Game. Let's get started!",
+    capital_start:
+        "To play the Life Quest, you will need energy. Let's determine what level of life energy you have at the start of the Game. To do this, you need to answer “yes” or “no” to the blitz game questions. Let's go!",
+    your_steps: "Your path in the game is here:\n",
+    choose_what: "Choose from the following to change them",
+    no_free_jumps: "Top up the balance for the next moves",
+    change_last_name: "last name",
+    payment_description:
+        "Select the payment amount: 100 rubles - for 1 move. Leave a tip for more moves. If you leave 900 rubles as a tip, you will receive one bonus move (in total - 11). Unlimited access - 2900 rubles tip. Unlimited access is valid for 120 days.",
+    payment_title: "Get access to the Life Quest Game",
+    payment_minimum: "Minimum amount for payment",
+    end_capital:
+        "You scored ${energy} points. With this level of energy, you enter the Life Quest. Let's multiply the energy during the Game!",
+    current_status: "Current status: ",
+    author_photo:
+        "AgACAgIAAxkBAAIK5mDXjcM0SjfGdpQn1GHUHpcPPBI9AAImtTEb_X_BStw3OmgakEthAQADAgADeQADIAQ",
+    end_level:
+        "Dear Player, ${first_name}! \n\n🎉Congratulations! 🎉\n\n\nYou have reached the finish, this Quest has ended for you. " +
+        "💪 We hope that the Quest has taught you something useful and allowed you to get to know yourself better. 👍\n\n\n" +
+        "At the beginning of the Game, your level of Energy was ${start_energy}. ⚠️\nYou have reached the finish with the level of Energy ${energy}. ✅\n\n\n" +
+        "🤩 If your Energy has increased, you can move on to the next level of the Quest, which will be dedicated to security issues " +
+        "(physical, financial, psychological, etc.).\n\n\n" +
+        "♻️ Keep an eye on Game updates in the official blog https://www.instagram.com/full_quest_of_life/\n\n\n" +
+        "🙏 We will be grateful if you write a review of this Game by email:",
+    decreased_energy:
+        "Dear Player!\n\nSince your last move, more than 3 days have passed.\n\nThe last move was at ",
+    decreased_energy1:
+        ".\n\nPerhaps the usual routine has overwhelmed, or maybe new events have suddenly overwhelmed. It is necessary to devote time to yourself and your development constantly. 📚\n\n“Life Quest” teaches you to keep yourself and your development in focus every day. Due to the long downtime, your Energy level decreases! 📉\n\nYour current Energy level is: ",
+    decreased_energy2:
+        "! 😔\n\nReturn to the Game to replenish and multiply your Energy. Remember: the main thing in success is consistency. 💪",
+    no_more_level:
+        "The next level is under development, and as soon as it is available, a notification will be sent",
+    coupon: "Activate coupon",
+    coupon_not_found: "Coupon not found",
+    coupon_allowed_only_once: "The coupon can only be activated once",
+    coupon_activated: "Coupon activated",
+    send_coupon: "Send the coupon code",
+    generate_coupon: "Generate a coupon",
+    coupon_types: "What coupon do you want to generate?",
+    coupon_free_jump: "3 free jumps",
+    coupon_free_level: "Free level",
+    coupon_generated: "Coupon created. Code: `${code}`",
+    wrong_notification_time: "Please enter the time in HH:MM format",
+    blits: "Blitz question",
+    end: "End of the game",
+    notification_text:
+        "Dear Player!\n🔗Return to the Life Quest Game, there are new questions and tasks waiting for you! Remember that the most important thing in success is consistency. 📈\n\nYour life is only in your hands, no one else will make you happy. 💪\n\n🎲Roll the dice and fulfill the Game conditions, and amazing changes will not be long in coming.😍",
+    free_jump_time: "🆓You can play for free until",
+    free_jumps: "🎲Free moves",
+    no_more_questions:
+        "There are no more questions or tasks. Please contact the authors",
+};
+
+
